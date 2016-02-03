@@ -1,4 +1,4 @@
-package com.org.services.busi;
+package com.org.services;
 
 import java.sql.SQLException;
 import java.util.HashMap;

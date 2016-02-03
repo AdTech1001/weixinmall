@@ -1,6 +1,7 @@
 package com.org.servlet;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.springframework.util.StringUtils;
 
 import com.org.common.CommonConstant;
 import com.org.common.PageConstant;
+import com.org.controller.CommonController;
 import com.org.util.SpringUtil;
 
 public class DispatcherServlet extends HttpServlet {
@@ -38,12 +40,10 @@ public class DispatcherServlet extends HttpServlet {
 		doPost(request, response);
 	}
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String targetUrl ="";
 		String servletName = "";
 		String _servletName ="";
-		try{
 			/* 0. 设置数据部缓存  */
 			response.setHeader("Pragma","no-cache"); 
 			response.setHeader("Cache-Control","no-cache"); 
@@ -66,8 +66,10 @@ public class DispatcherServlet extends HttpServlet {
 			
 			// Controller从spring容器中取得
 			CommonController aim = (CommonController)SpringUtil.getBean(servletName);
-			/*****判断是否为重复提交*************************/
-			String token=request.getParameter("token");
+			
+			/*****判断是否为重复提交************************ 
+			 * 可使用 用户唯一身份+时间作为唯一号
+			String token = request.getParameter("token");
 			if(token!=null){
 				HttpSession session=request.getSession();
 				synchronized(session){
@@ -86,40 +88,48 @@ public class DispatcherServlet extends HttpServlet {
 					return;
 				}
 			}
+			*/
+			
 			/*******************************************/
 			if(StringUtils.isEmpty(mtdName)){
 				aim.post(request, response);
 			} else {
-				Method m = null;
-				String mtdKey = servletName + mtdName;
-				if(mtdContainer.containsKey(mtdKey)) {
-					m = mtdContainer.get(mtdKey);
-				} else {
-					m = aim.getClass().getDeclaredMethod(mtdName, new Class<?>[]{HttpServletRequest.class, HttpServletResponse.class});
-					mtdContainer.put(servletName + mtdName, m);
-				}
-				
-				m.invoke(aim, request, response);
+					Method m = null;
+					String mtdKey = servletName + mtdName;
+					if(mtdContainer.containsKey(mtdKey)) {
+						m = mtdContainer.get(mtdKey);
+					} else {
+						try {
+							m = aim.getClass().getDeclaredMethod(mtdName, new Class<?>[]{HttpServletRequest.class, HttpServletResponse.class});
+						} catch (SecurityException e) {
+							e.printStackTrace();
+							targetUrl = PageConstant.ERROR;
+							request.setAttribute("respCode", "SYS001");
+							request.setAttribute("respMsg", "系统异常");
+							this.forward(targetUrl, request, response);
+						} catch (NoSuchMethodException e) {
+							e.printStackTrace();
+							targetUrl = PageConstant.ERROR;
+							request.setAttribute("respCode", "SYS002");
+							request.setAttribute("respMsg", "系统异常");
+							this.forward(targetUrl, request, response);
+						}
+						mtdContainer.put(servletName + mtdName, m);
+					}
+					
+					try {
+						m.invoke(aim, request, response);
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					}
 			}
 			//流程执行完，更新tokenParam
 			request.getSession().removeAttribute(servletName);
 			log.debug("DispatcherServlet-->" + _servletName);
-		}catch(Exception se){
-			se.printStackTrace();
-			//request.getSession().removeAttribute(CT.COMP_LOCAL_USER);
-			targetUrl = PageConstant.ERROR;
-			request.setAttribute("respCode", "SYS001");
-			if(StringUtils.isEmpty(se.getMessage())) {
-				request.setAttribute("respMsg", se.getCause().getMessage());
-			} else {
-				request.setAttribute("respMsg", se.getMessage());
-			}
-			try {
-				this.forward(targetUrl, request, response);		
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 	}
 	
 	public void redirect(String targetUrl,HttpServletResponse response) throws Exception{
@@ -129,7 +139,7 @@ public class DispatcherServlet extends HttpServlet {
 	public void destroy() {
 	}
 	
-	private void forward(String targetUrl,HttpServletRequest request, HttpServletResponse response) throws Exception{
+	private void forward(String targetUrl,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		RequestDispatcher rd = request.getRequestDispatcher(targetUrl);
 		rd.forward(request, response);
 	}

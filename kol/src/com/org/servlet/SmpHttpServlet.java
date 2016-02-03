@@ -1,5 +1,6 @@
 package com.org.servlet;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -7,6 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +31,7 @@ public class SmpHttpServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	
-	protected void forward(String targetUrl,HttpServletRequest request, HttpServletResponse response) throws Exception{
+	protected void forward(String targetUrl,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		RequestDispatcher rd = request.getRequestDispatcher(targetUrl);
 		rd.forward(request, response);
 	}
@@ -133,7 +135,7 @@ public class SmpHttpServlet extends HttpServlet {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected Map<String,String> getParamMap(HttpServletRequest request)throws Exception{
+	protected Map<String,String> getParamMap(HttpServletRequest request){
 		Map<String,String> paramMap = new HashMap<String, String>();
 		Enumeration<String> enumeration = request.getParameterNames();
 		while(enumeration.hasMoreElements()){

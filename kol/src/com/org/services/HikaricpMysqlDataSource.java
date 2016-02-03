@@ -17,11 +17,11 @@ import com.zaxxer.hikari.HikariDataSource;
  * @author Administrator
  *
  */
-public class HikaricpMysqlDataSourceService {
+public class HikaricpMysqlDataSource {
 	
-	public static HikaricpMysqlDataSourceService getInstance(){
+	public static HikaricpMysqlDataSource getInstance(){
 		if(hds == null){
-			hds = new HikaricpMysqlDataSourceService();
+			hds = new HikaricpMysqlDataSource();
 		}
 		return hds;
 	}
@@ -35,9 +35,9 @@ public class HikaricpMysqlDataSourceService {
 		}
 	}
 
-	private static HikaricpMysqlDataSourceService hds = null;
+	private static HikaricpMysqlDataSource hds = null;
 	
-	private HikaricpMysqlDataSourceService(){
+	private HikaricpMysqlDataSource(){
 		Properties pro = new Properties();
 		try {
 			String fileName = "/WEB-INF/config/mysql_db.properties";

@@ -7,11 +7,6 @@ import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.org.controller.webapp.msgmanager.TypeEvent;
-import com.org.controller.webapp.msgmanager.TypeImage;
-import com.org.controller.webapp.msgmanager.TypeNews;
-import com.org.controller.webapp.msgmanager.TypeText;
-
 /**
  * 路由适配器，决定当前请求由谁来处理
  * @author Administrator

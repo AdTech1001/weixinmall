@@ -9,7 +9,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.org.controller.webapp.WxConstant;
+import com.org.controller.WxConstant;
 import com.org.controller.webapp.utils.WxUserContainer;
 import com.org.controller.webapp.utils.WxUtil;
 import com.org.dao.CommonDao;

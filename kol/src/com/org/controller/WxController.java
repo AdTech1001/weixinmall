@@ -1,9 +1,11 @@
-package com.org.controller.webapp;
+package com.org.controller;
 
+import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,7 +19,6 @@ import org.springframework.stereotype.Controller;
 import com.org.controller.webapp.rute.RuteAdapter;
 import com.org.controller.webapp.rute.RuteThreadPool;
 import com.org.controller.webapp.utils.WxUtil;
-import com.org.servlet.CommonController;
 import com.org.servlet.SmpHttpServlet;
 import com.org.util.CT;
 import com.org.utils.StringUtil;
@@ -36,8 +37,7 @@ public class WxController extends SmpHttpServlet implements CommonController{
 	 * @param response
 	 * @throws Exception
 	 */
-	public void validate(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public void validate(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		log.info("token: " + this.getParamMap(request));
 		String signature = request.getParameter("signature");
 		String timestamp = request.getParameter("timestamp");
@@ -66,8 +66,7 @@ public class WxController extends SmpHttpServlet implements CommonController{
 	}
 	
 	// TODO 测试用的
-	public void getCacheToken(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public void getCacheToken(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String token = WxUtil.getToken();
 		String timestamp = String.valueOf(StringUtil.getTimestamp()); // 必填，生成签名的时间戳
 		String nonceStr = UUID.randomUUID().toString(); // 必填，签名，见附录1
@@ -83,22 +82,19 @@ public class WxController extends SmpHttpServlet implements CommonController{
 		return;
 	}
 	
-	public void initBottomMenu(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public void initBottomMenu(HttpServletRequest request, HttpServletResponse response) {
 		WxUtil.createBottomMenu();
 		//this.forward("/www/html/wxtest.jsp", request, response);
 		return;
 	}
 	
-	public void deleteBottomMenu(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public void deleteBottomMenu(HttpServletRequest request, HttpServletResponse response) {
 		WxUtil.deleteBottomMenu();
 		//this.forward("/www/html/wxtest.jsp", request, response);
 		return;
 	}
 	
-	public void post(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public void post(HttpServletRequest request, HttpServletResponse response) {
 		
 	}
 	

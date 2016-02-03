@@ -5,7 +5,7 @@ import java.util.Map;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import com.org.controller.webapp.WxConstant;
+import com.org.controller.WxConstant;
 import com.org.controller.webapp.utils.WxUserContainer;
 import com.org.controller.webapp.utils.WxUtil;
 

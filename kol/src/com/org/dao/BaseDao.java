@@ -16,14 +16,14 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import com.org.model.reflect.ReflectDbModel;
-import com.org.services.HikaricpMysqlDataSourceService;
+import com.org.services.HikaricpMysqlDataSource;
 import com.org.util.StringUtil;
 import com.org.utils.ByteUtil;
 import com.org.utils.DesUtil;
 
 // TODO 重新做分页
 public class BaseDao {
-	private static HikaricpMysqlDataSourceService dataSource = HikaricpMysqlDataSourceService.getInstance();
+	private static HikaricpMysqlDataSource dataSource = HikaricpMysqlDataSource.getInstance();
 	
 	protected java.sql.Connection getConnection(){
 		java.sql.Connection res = dataSource.getConnection();

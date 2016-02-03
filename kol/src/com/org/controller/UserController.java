@@ -13,8 +13,7 @@ import org.springframework.stereotype.Controller;
 import com.org.common.CommonConstant;
 import com.org.common.UserConstant;
 import com.org.exception.SvcException;
-import com.org.services.busi.UserService;
-import com.org.servlet.CommonController;
+import com.org.services.UserService;
 import com.org.servlet.SmpHttpServlet;
 import com.org.util.MD5;
 import com.org.util.SpringUtil;
@@ -119,8 +118,7 @@ public class UserController extends SmpHttpServlet implements CommonController{
 	private Log log = LogFactory.getLog(UserController.class);
 
 	@Override
-	public void post(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public void post(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		
 	}

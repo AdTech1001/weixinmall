@@ -6,15 +6,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import net.sf.json.JSONObject;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.org.controller.webapp.msgmanager.TypeEvent;
-import com.org.controller.webapp.msgmanager.TypeImage;
-import com.org.controller.webapp.msgmanager.TypeNews;
-import com.org.controller.webapp.msgmanager.TypeText;
 
 /**
  * 所有进入的请求，先交给本类
