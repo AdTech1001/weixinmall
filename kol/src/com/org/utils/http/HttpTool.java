@@ -14,7 +14,7 @@ public interface HttpTool {
 
 	public JSONObject wxHttpsPost(String paramContent, String url) ;
 
-	public JSONObject wxHttpsGet(JSONObject paramContent, String url) ;
+	public JSONObject wxHttpsGet(String paramContent, String url) ;
 
 	public String simplePost(JSONObject jsonParam, String remoteUrl, String charSet) ;
 	

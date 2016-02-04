@@ -58,7 +58,7 @@ import com.org.utils.http.HttpTool;
  * 
  * HTTPClient µÄ·â×°
  */
-public class HttpApacheClient implements HttpTool{
+public class HttpUtil implements HttpTool{
 
 	public String httpGet(String url,String charset) {
 		String httpResult = "";
@@ -212,8 +212,8 @@ public class HttpApacheClient implements HttpTool{
 		return httpsRequest(url, "POST", requestJson);
 	}
 	
-	public JSONObject wxHttpsGet(JSONObject requestJson, String url) {
-		return httpsRequest(url, "GET", requestJson.toString());
+	public JSONObject wxHttpsGet(String requestJson, String url) {
+		return httpsRequest(url, "GET", requestJson);
 	}
 	
 	public String simplePost(JSONObject jsonParam, String remoteUrl, String charSet){
@@ -404,7 +404,7 @@ public class HttpApacheClient implements HttpTool{
 		buttonC.put("url", "http://www.rsbk.cc");
 		
 		
-		HttpApacheClient c = new HttpApacheClient();
+		HttpUtil c = new HttpUtil();
 		String requestUrl = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=CLDhSR_unsgoG7LH1A8Tv6DITPykDoqEeo88VoVLv_9sjZdc-k0hdw5U3vXODrYDcrGzlDy-6PuAY6KRWxpWsMafidqgcGi0j3IqqCEzj5kSBVjAEAAJD";
 		JSONObject jsonObject = c.wxHttpsPost(requestJson, requestUrl);
 		System.out.println("=======> "+jsonObject.toString());

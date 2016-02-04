@@ -15,11 +15,11 @@ import org.apache.commons.logging.LogFactory;
 public class RuteAdapter {
 	private static Log log = LogFactory.getLog(RuteAdapter.class);
 	
-	public static Callable<String> adapter(JSONObject xmlJson){
+	public static Business<String> adapter(JSONObject xmlJson){
 		if(xmlJson == null) {
 			throw new NullPointerException("EventAdapter can not deal an null param request");
 		}
-		Callable<String> e = null;
+		Business<String> e = null;
 		String msgType = xmlJson.getString("MsgType");
 		log.info("请求消息类型====>"+msgType);
 		if(msgType.equals("event")) {

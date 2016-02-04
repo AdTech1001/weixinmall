@@ -59,41 +59,24 @@ public class TypeEvent implements Business<String> {
 		} else if(Event.equals("unsubscribe") || Event.equals("subscribe")) {
 			
 			CommonDao commonDao = (CommonDao)SpringUtil.getBean("commonDao");
-			String sql = "select 1 from wx_user_info where openid = ?";
 			Map<Integer, Object> queryParams = new HashMap<Integer, Object>();
 			queryParams.put(1, FromUserName);
 			
 			JSONObject actual = WxUserContainer.getUserBaseInfo(FromUserName);
 			String subscribe = actual.getString("subscribe");
 			String subscribe_time = DateUtil.getDateStringByFormat(DateUtil.yyyyMMddHHmmss);
+			String nickname = actual.getString("nickname");
+			String sex = actual.getString("sex");
 			
-			if(commonDao.isExist(sql, queryParams, null) != null) {
-				// update
-				String updateSql = "update wx_user_info set subscribe=?, subscribe_time=? where openid =?";
-				Map<Integer, Object> params = new HashMap<Integer, Object>();
-				params.put(1, subscribe); // 
-				params.put(2, subscribe_time);
-				params.put(3, FromUserName);
-				commonDao.update(updateSql, params);
-			} else {
-				// insert 
-				String nickname = actual.getString("nickname");
-				String sex = actual.getString("sex");
-				
-				String addSql = "insert into wx_user_info (openid, nickname, sex, subscribe, subscribe_time) VALUES (?, ?, ?, ?, ?)";
-				Map<Integer, Object> params = new HashMap<Integer, Object>();
-				params.put(1, FromUserName); // 
-				params.put(2, nickname);
-				params.put(3, sex);
-				params.put(4, subscribe);
-				params.put(5, subscribe_time);
-				try {
-					commonDao.addSingle(addSql, params);
-				} catch (SQLException e) {
-					e.printStackTrace();
-					log.info("subscribe ====> 保存关注用户异常");
-				}
-			}
+			String addSql = "insert into wx_user_info (openid, nickname, sex, subscribe, subscribe_time) VALUES (?, ?, ?, ?, ?)";
+			Map<Integer, Object> params = new HashMap<Integer, Object>();
+			params.put(1, FromUserName); // 
+			params.put(2, nickname);
+			params.put(3, sex);
+			params.put(4, subscribe);
+			params.put(5, subscribe_time);
+			commonDao.addSingle(addSql, params);
+			
 		}
 		// 
 		return WxConstant.RETURN_SUCCESS;

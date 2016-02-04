@@ -2,7 +2,7 @@ package com.org.common;
 
 public class CommonConstant {
 	
-	public static String ENCODE_DEFAULT = "utf-8";
+	public static String UTF8 = "utf-8";
 	public final static String DB_MONGO = "mongo";
 	public final static String DB_MYSQL = "hikaricp-mysql";
 	public final static String DB_HIKARICP = "hikaricp-oracle";

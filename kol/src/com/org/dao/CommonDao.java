@@ -9,6 +9,8 @@ import java.util.Map;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
 
 import com.org.exception.SvcException;
@@ -49,22 +51,13 @@ public class CommonDao extends BaseDao {
 		T entity = null;
 		try {
 			entity = entityClass.newInstance();
-			List<T> list = queryListByT(sql, params, entity);
-			if (list.size() > 1) {
-				throw new SvcException(
-						"Common Dao : result counts more than single");
-			}
-			if (list.size() <= 0) {
-				return null;
-			}
-			return list.get(0);
+			T res = queryByT(sql, params, entity);
+			return res;
 		} catch (InstantiationException e1) {
 			e1.printStackTrace();
 		} catch (IllegalAccessException e1) {
 			e1.printStackTrace();
 		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -139,21 +132,33 @@ public class CommonDao extends BaseDao {
 	 * @throws SQLException
 	 * @throws SvcException
 	 */
-	public synchronized <T> boolean addSingle(String sql, Map<Integer, Object> params) throws SQLException {
+	public synchronized <T> boolean addSingle(String sql, Map<Integer, Object> params) {
 		java.sql.Connection conn = getConnection();
-		PreparedStatement ps = conn.prepareStatement(sql);
+		PreparedStatement ps = null;
 		try {
+			ps = conn.prepareStatement(sql);
 			setStatmentParams(ps, params);
 			ps.execute();
+			conn.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			conn.setAutoCommit(false);
-			conn.rollback();
-			ps.close();
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 			return false;
 		} finally {
-			conn.close();
-			ps.close();
+			try {
+				if(conn != null) {
+					conn.close();
+				}
+				if(ps != null) {
+					ps.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return true;
 	}
@@ -163,26 +168,34 @@ public class CommonDao extends BaseDao {
 	 * @param params
 	 * @throws SQLException
 	 */
-	public synchronized <T> void update(String sql, Map<Integer, Object> params)
-			throws SQLException {
+	public synchronized boolean update(String sql, Map<Integer, Object> params)  {
 		java.sql.Connection conn = getConnection();
-		// 如果要做事务，批量提交什么的，就要关闭自动提交，在自己想要提交的时候调用commit()
-		//conn.setAutoCommit(false);
-
-		PreparedStatement ps = conn.prepareStatement(sql);
+		PreparedStatement ps = null;
 		try {
+			ps = conn.prepareStatement(sql);
 			setStatmentParams(ps, params);
 			ps.executeUpdate();
-			//conn.commit();
-			// conn默认的是自动提交，如果使用了conn.commit();，则需要在conn初始化的时候关闭自动提交 conn.setAutoCommit(false);
+			conn.commit();
+			return true;
 		} catch (SQLException e1) {
 			e1.printStackTrace();
-			conn.setAutoCommit(false);
-			conn.rollback();
-			return;
+			try {
+				conn.rollback();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return false;
 		} finally {
-			conn.close();
-			ps.close();
+			try {
+				if(conn != null) {
+					conn.close();
+				}
+				if(ps != null) {
+					ps.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -195,4 +208,49 @@ public class CommonDao extends BaseDao {
 		}
 		return user;
 	}
+	
+	/**
+	 * 事务插入。建议不大于10000条
+	 * 参考backup文件，关于表不支持事务的解决方案
+	 * @param sql
+	 * @param paramsList
+	 */
+	public boolean transactionInsert(String sql, List<Map<Integer, Object>> paramsList){
+		java.sql.Connection conn = getConnection();
+		
+		PreparedStatement ps = null;
+		try {
+			for (int i = 0; i < paramsList.size(); i++) {
+				ps = conn.prepareStatement(sql);
+				setStatmentParams(ps, paramsList.get(i));
+				ps.executeUpdate();
+			}
+			conn.commit();
+			return true;
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			
+			if(conn != null) {
+				try {
+					conn.rollback();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			return false;
+		} finally {
+			try {
+				if(conn != null) {
+					conn.close();
+				}
+				if(ps != null) {
+					ps.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private Log log = LogFactory.getLog(CommonDao.class);
 }

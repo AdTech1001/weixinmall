@@ -139,7 +139,7 @@ public class StringUtil {
             if (!m.matches())
                 throw new RuntimeException("不能将ascii字符串\"" + str + "\"转换为bcd格式。");
            
-            return new String(ascii2bcd(str.getBytes(CommonConstant.ENCODE_DEFAULT)), CommonConstant.ENCODE_DEFAULT);
+            return new String(ascii2bcd(str.getBytes(CommonConstant.UTF8)), CommonConstant.UTF8);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -160,7 +160,7 @@ public class StringUtil {
      */
     public static String bcd2ascii(String bcdData) {
         try {
-            return new String(bcd2ascii(bcdData.getBytes(CommonConstant.ENCODE_DEFAULT)), CommonConstant.ENCODE_DEFAULT);
+            return new String(bcd2ascii(bcdData.getBytes(CommonConstant.UTF8)), CommonConstant.UTF8);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -189,7 +189,7 @@ public class StringUtil {
     public static String hex2ascii(String str) {
         try {
         	
-            return new String(hex2ascii(str.getBytes(CommonConstant.ENCODE_DEFAULT)), CommonConstant.ENCODE_DEFAULT);
+            return new String(hex2ascii(str.getBytes(CommonConstant.UTF8)), CommonConstant.UTF8);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -219,7 +219,7 @@ public class StringUtil {
         if (!m.matches())
             throw new RuntimeException("不能将ascii字符串 \"" + str + "\" 转换为Hex格式。");
         try {
-            return new String(ascii2hex(str.getBytes(CommonConstant.ENCODE_DEFAULT)), CommonConstant.ENCODE_DEFAULT);
+            return new String(ascii2hex(str.getBytes(CommonConstant.UTF8)), CommonConstant.UTF8);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -276,7 +276,7 @@ public class StringUtil {
      */
     public static int getByteLength(String str){
     	try{
-    		return str.getBytes(CommonConstant.ENCODE_DEFAULT).length;
+    		return str.getBytes(CommonConstant.UTF8).length;
     	}catch(Exception e){
     		return -1;
     	}

@@ -26,8 +26,6 @@ import com.org.log.impl.LogUtilMg;
 import com.org.util.CT;
 
 /**
- * @author Nano
- *
  * XMLπ§æﬂ¿‡
  */
 public class XmlUtils {

@@ -14,13 +14,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.util.StringUtils;
 /**
  * 
- * @author Nano
- * 
  * .properties file include 
  *
  */
-public class SmpPropertyUtil {
-	private static Log log = LogFactory.getLog(SmpPropertyUtil.class);
+public class PropertyUtil {
+	private static Log log = LogFactory.getLog(PropertyUtil.class);
 	
 	public static Map<String,Properties>  proMaps = new HashMap<String, Properties>();
 	

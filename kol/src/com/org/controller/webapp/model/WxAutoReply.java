@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.org.util.MD5;
-import com.org.utils.SmpPropertyUtil;
+import com.org.utils.PropertyUtil;
 
 public class WxAutoReply {
 	private static WxAutoReply wxReply = null;
@@ -44,7 +44,7 @@ public class WxAutoReply {
 	public void init() {
 		if(!isInit) {
 			//String menuStr = SmpPropertyUtil.getValue("wx_auto_reply", "menu");
-			Properties p = SmpPropertyUtil.getProperties("wx_auto_reply");
+			Properties p = PropertyUtil.getProperties("wx_auto_reply");
 			Object o = null;
 			String pKey = null;
 			String pVal = null;

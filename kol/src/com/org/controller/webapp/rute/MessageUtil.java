@@ -8,9 +8,9 @@ import org.apache.commons.logging.LogFactory;
 
 import com.org.controller.webapp.utils.Memcache;
 import com.org.controller.webapp.utils.WxUtil;
-import com.org.utils.SmpPropertyUtil;
+import com.org.utils.PropertyUtil;
 import com.org.utils.http.HttpTool;
-import com.org.utils.http.impl.HttpApacheClient;
+import com.org.utils.http.impl.HttpUtil;
 
 /**
  * 客服消息管理
@@ -21,7 +21,7 @@ import com.org.utils.http.impl.HttpApacheClient;
  */
 public class MessageUtil {
 	
-	private static String url = SmpPropertyUtil.getValue("wx", "wx_send_message_by_service");
+	private static String url = PropertyUtil.getValue("wx", "wx_send_message_by_service");
 	private static Log log = LogFactory.getLog(MessageUtil.class);
 	protected MessageUtil(){}
 
@@ -35,11 +35,11 @@ public class MessageUtil {
 		paramContent.put("touser", openid);
 
 		// 调用客服接口发送消息 
-		String urlTemp = url.concat(Memcache.getInstance().getValue(WxUtil.WX_TOKEN));
+		String urlTemp = url.concat(Memcache.getInstance().getValue(WxUtil.WX_TOKEN_KEY));
 		log.info("pushMessage url====> " + urlTemp);
 		
 		
-		HttpTool http = new HttpApacheClient();
+		HttpTool http = new HttpUtil();
 		JSONObject returns = http.wxHttpsPost(paramContent, urlTemp);
 		log.info("pushMessage returns====> " + returns);
 
@@ -54,11 +54,11 @@ public class MessageUtil {
 	public static JSONObject pushMessage(JSONObject paramContent){
 
 		// 调用客服接口发送消息 
-		String urlTemp = url.concat(Memcache.getInstance().getValue(WxUtil.WX_TOKEN));
+		String urlTemp = url.concat(Memcache.getInstance().getValue(WxUtil.WX_TOKEN_KEY));
 		log.info("pushMessage url====> " + urlTemp);
 		
 		
-		HttpTool http = new HttpApacheClient();
+		HttpTool http = new HttpUtil();
 		JSONObject returns = http.wxHttpsPost(paramContent, urlTemp);
 		log.info("pushMessage returns====> " + returns);
 

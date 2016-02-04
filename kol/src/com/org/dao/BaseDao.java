@@ -3,6 +3,7 @@ package com.org.dao;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -16,20 +17,47 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import com.org.model.reflect.ReflectDbModel;
-import com.org.services.HikaricpMysqlDataSource;
 import com.org.util.StringUtil;
 import com.org.utils.ByteUtil;
 import com.org.utils.DesUtil;
 
 // TODO 重新做分页
 public class BaseDao {
-	private static HikaricpMysqlDataSource dataSource = HikaricpMysqlDataSource.getInstance();
+	private static HikaricpMysql dataSource = HikaricpMysql.getInstance();
 	
+	/**
+	 * 获取connection，同时关闭自动提交
+	 * @return
+	 */
 	protected java.sql.Connection getConnection(){
-		java.sql.Connection res = dataSource.getConnection();
-		return res;
+		java.sql.Connection conn = dataSource.getConnection();
+		return conn;
 	}
 
+
+	/**
+	 * jdbc 存在中文乱码
+	 * @return
+	 * @throws ClassNotFoundException 
+	 * @throws SQLException 
+	 */
+	protected java.sql.Connection getJDBCConnection() {
+		try {
+			Class.forName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+			String url="jdbc:mysql://114.80.215.196:3306/sq_zhouman10?user=sq_zhouman10&password=zhouman10";
+			java.sql.Connection conn = DriverManager.getConnection(url);
+			conn.setAutoCommit(false);
+			return conn;
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	protected <T> List<T> queryListByT(String sql, Map<Integer, Object> params, T entity)
 			throws SQLException, IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
@@ -70,6 +98,46 @@ public class BaseDao {
 			releaseAll(rs, ps, connection);
 		}			
 		return list;
+	}
+	
+	protected <T> T queryByT(String sql, Map<Integer, Object> params, T entity)
+			throws SQLException, IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException {
+		
+		java.sql.Connection connection = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+		try{
+			connection = getConnection();
+			ps = connection.prepareStatement(sql);
+			setStatmentParams(ps, params);
+			rs = ps.executeQuery();
+			ResultSetMetaData rsmd = rs.getMetaData();
+			// 列数
+			int columnCounts = rsmd.getColumnCount();
+			//
+			ReflectDbModel model = new ReflectDbModel();
+			Method m = null;
+			while (rs.next()) {
+				// 这个地方相当于每用一次就new一次,否则数据会覆盖上一次的数据
+				for (int i = 1; i <= columnCounts; i++) {
+					initReflectDbModel(rs, model, i);
+					if (model.getValue() != null && model.getValue() != "") {
+						try {
+							m = entity.getClass().getDeclaredMethod("set" + model.getKey(), model.getValue().getClass());
+							m.invoke(entity, model.getValue());
+						} catch (SecurityException e) {
+							e.printStackTrace();
+						} catch (NoSuchMethodException e) {
+							System.out.println(e.getMessage() + ": NoSuchMethodException");
+						}
+					}
+				}
+			}
+		}finally{
+			releaseAll(rs, ps, connection);
+		}			
+		return entity;
 	}
 	
 	/**

@@ -186,44 +186,5 @@ CREATE TABLE `kol_operate_tracking` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-
-
 --------------------- TODO resource
-DROP TABLE IF EXISTS `t_contact`;
-CREATE TABLE `t_contact` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_name` varchar(50) NOT NULL,
-  `user_mobile` varchar(20) NOT NULL,
-  `user_phone` varchar(20) NOT NULL,
-  `user_mail` varchar(100) DEFAULT NULL,
-  `user_qq` varchar(20) DEFAULT NULL,
-  `user_source` varchar(1000) DEFAULT NULL,
-  `create_time` varchar(14) DEFAULT NULL,
-  `content` varchar(1000) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `t_form`;
-CREATE TABLE `t_form` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_name` varchar(50) NOT NULL,
-  `user_mobile` varchar(20) NOT NULL,
-  `user_phone` varchar(20) NOT NULL,
-  `pre_time` varchar(14) DEFAULT NULL,
-  `user_qq` varchar(20) DEFAULT NULL,
-  `user_address` varchar(1000) DEFAULT NULL,
-  `create_time` varchar(14) DEFAULT NULL,
-  `content` varchar(1000) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `t_advice`;
-CREATE TABLE `t_advice` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_name` varchar(50) NOT NULL,
-  `user_mobile` varchar(20) NOT NULL,
-  `user_phone` varchar(20) NOT NULL,
-  `create_time` varchar(14) DEFAULT NULL,
-  `content` varchar(1000) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;

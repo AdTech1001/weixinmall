@@ -10,7 +10,7 @@ import org.springframework.web.context.ContextLoader;
 
 import com.org.container.CommonContainer;
 import com.org.controller.webapp.utils.WxUtil;
-import com.org.utils.SmpPropertyUtil;
+import com.org.utils.PropertyUtil;
 
 public class ContextLoaderListener implements ServletContextListener{
 
@@ -40,8 +40,7 @@ public class ContextLoaderListener implements ServletContextListener{
 		log.info("Integrate Smp With Spring Container Begin....");
 		
 		ServletContext servletContext =	arg0.getServletContext();
-	    SmpPropertyUtil.initProperties(servletContext);
-	    
+	    PropertyUtil.initProperties(servletContext);
 	    CommonContainer.saveContext(servletContext);
 	    
 		/* 6.init spring context */

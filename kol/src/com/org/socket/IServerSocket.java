@@ -4,8 +4,6 @@ import com.org.exception.SSocketException;
 
 
 /**
- * @author Nano
- * 
  * socket 服务接口
  * 
  * 阻塞和非阻塞服务由此接口派生

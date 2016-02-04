@@ -1,4 +1,4 @@
-package com.org.services;
+package com.org.dao;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,15 +13,14 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 /**
- * hikaricp数据源服务
- * @author Administrator
+ * hikaricp数据源服务－ mysql
  *
  */
-public class HikaricpMysqlDataSource {
+public class HikaricpMysql {
 	
-	public static HikaricpMysqlDataSource getInstance(){
+	public static HikaricpMysql getInstance(){
 		if(hds == null){
-			hds = new HikaricpMysqlDataSource();
+			hds = new HikaricpMysql();
 		}
 		return hds;
 	}
@@ -35,9 +34,9 @@ public class HikaricpMysqlDataSource {
 		}
 	}
 
-	private static HikaricpMysqlDataSource hds = null;
+	private static HikaricpMysql hds = null;
 	
-	private HikaricpMysqlDataSource(){
+	private HikaricpMysql(){
 		Properties pro = new Properties();
 		try {
 			String fileName = "/WEB-INF/config/mysql_db.properties";
@@ -78,6 +77,8 @@ public class HikaricpMysqlDataSource {
 		config.setMaximumPoolSize(Integer.valueOf(maximumPoolSize));
 		config.setMinimumIdle(Integer.valueOf(minimumIdle));
 		config.setConnectionTestQuery(connectionTestQuery);
+		//
+		config.setAutoCommit(false);
 		
 		HikariDataSource temp = new HikariDataSource(config);
 		this.template = temp;

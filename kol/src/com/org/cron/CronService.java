@@ -5,8 +5,6 @@ import org.apache.commons.logging.LogFactory;
 
 import com.org.exception.BusinessException;
 /**
- * @author Nano
- * 
  * 定时服务的抽象
  */
 public abstract class CronService implements Runnable {

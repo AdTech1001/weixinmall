@@ -13,9 +13,9 @@ import com.org.log.LogUtil;
 import com.org.log.impl.LogUtilMg;
 import com.org.util.CT;
 import com.org.util.SpringUtil;
-import com.org.utils.SmpPropertyUtil;
+import com.org.utils.PropertyUtil;
 import com.org.utils.http.HttpTool;
-import com.org.utils.http.impl.HttpApacheClient;
+import com.org.utils.http.impl.HttpUtil;
 
 /**
  * 微信用户组信息。用于缓存用户的当前操作、用户组、用户ID等。
@@ -89,13 +89,13 @@ public class WxUserContainer {
 	 */
 	public static synchronized JSONObject getGroupidList() {
 		if(groupInfo == null || groupInfo.isEmpty()) {
-			String token = Memcache.getInstance().getValue(WxUtil.WX_TOKEN);
-			String remoteUrl = SmpPropertyUtil.getValue("wx", "wx_get_groupid");
+			String token = Memcache.getInstance().getValue(WxUtil.WX_TOKEN_KEY);
+			String remoteUrl = PropertyUtil.getValue("wx", "wx_get_groupid");
 			remoteUrl = remoteUrl.concat(token);
 			
 			JSONObject requestJson = new JSONObject();
 			
-			HttpTool http = new HttpApacheClient();
+			HttpTool http = new HttpUtil();
 			groupInfo = http.httpPost(requestJson, remoteUrl, CT.ENCODE_UTF8);
 			return groupInfo;
 		}
@@ -108,13 +108,13 @@ public class WxUserContainer {
 	 */
 	public static JSONObject getWxUserList() {
 		if(wxUserList == null || wxUserList.isEmpty()) {
-			String token = Memcache.getInstance().getValue(WxUtil.WX_TOKEN);
-			String remoteUrl = SmpPropertyUtil.getValue("wx", "wx_get_userid_list");
+			String token = Memcache.getInstance().getValue(WxUtil.WX_TOKEN_KEY);
+			String remoteUrl = PropertyUtil.getValue("wx", "wx_get_userid_list");
 			remoteUrl = remoteUrl.concat(token);
 			
 			JSONObject requestJson = new JSONObject();
 			
-			HttpTool http = new HttpApacheClient();
+			HttpTool http = new HttpUtil();
 			System.out.println("查询用户列表请求报文  ： " + requestJson.toString());
 			wxUserList = http.wxHttpsPost(requestJson, remoteUrl);
 			return wxUserList;
@@ -141,14 +141,14 @@ public class WxUserContainer {
 	 * @return
 	 */
 	public static JSONObject getUserGroup(String openid) {
-		String token = Memcache.getInstance().getValue(WxUtil.WX_TOKEN);
-		String remoteUrl = SmpPropertyUtil.getValue("wx", "wx_get_user_group");
+		String token = Memcache.getInstance().getValue(WxUtil.WX_TOKEN_KEY);
+		String remoteUrl = PropertyUtil.getValue("wx", "wx_get_user_group");
 		remoteUrl = remoteUrl.concat(token);
 		
 		JSONObject requestJson = new JSONObject();
 		requestJson.put("openid", openid);
 		
-		HttpTool http = new HttpApacheClient();
+		HttpTool http = new HttpUtil();
 		LogUtil.log(WxUtil.class, "查询用户所在组请求报文  ： " + requestJson.toString(), null, LogUtilMg.LOG_INFO, CT.LOG_PATTERN_NULL);
 		JSONObject userGroup = http.wxHttpsPost(requestJson, remoteUrl);
 		LogUtil.log(WxUtil.class, "查询用户所在组请求报文  ： " + userGroup.toString(), null, LogUtilMg.LOG_INFO, CT.LOG_PATTERN_NULL);
@@ -209,17 +209,17 @@ public class WxUserContainer {
 	}
 	
 	/**
-	 * 根据openid 向微信查询用户基本信息
+	 * 先查本地，再查微信
 	 * @param openid
 	 * @return
 	 */
 	public static JSONObject getUserBaseInfo(String openid) {
-		String token = Memcache.getInstance().getValue(WxUtil.WX_TOKEN);
-		String remoteUrl = SmpPropertyUtil.getValue("wx", "wx_get_user_baseinfo");
+		String token = Memcache.getInstance().getValue(WxUtil.WX_TOKEN_KEY);
+		String remoteUrl = PropertyUtil.getValue("wx", "wx_get_user_baseinfo");
 		remoteUrl = remoteUrl.concat(token).concat("&openid=").concat(openid);
 		
 		JSONObject requestJson = new JSONObject();
-		HttpTool http = new HttpApacheClient();
+		HttpTool http = new HttpUtil();
 		LogUtil.log(WxUtil.class, "查询用户基本信息请求报文  ： " + requestJson.toString(), null, LogUtilMg.LOG_INFO, CT.LOG_PATTERN_NULL);
 		JSONObject userGroup = http.wxHttpsPost(requestJson, remoteUrl);
 		LogUtil.log(WxUtil.class, "查询用户基本信息请求返回  ： " + userGroup.toString(), null, LogUtilMg.LOG_INFO, CT.LOG_PATTERN_NULL);
@@ -246,12 +246,12 @@ public class WxUserContainer {
 	public static JSONObject getBatchUserInfoFromWx(JSONObject openidList) {
 		
 		// 组url
-		String token = Memcache.getInstance().getValue(WxUtil.WX_TOKEN);
-		String remoteUrl = SmpPropertyUtil.getValue("wx", "wx_get_batch_user_baseinfo");
+		String token = Memcache.getInstance().getValue(WxUtil.WX_TOKEN_KEY);
+		String remoteUrl = PropertyUtil.getValue("wx", "wx_get_batch_user_baseinfo");
 		remoteUrl = remoteUrl.concat(token);
 		
 		// 调httppost查询
-		HttpTool http = new HttpApacheClient();
+		HttpTool http = new HttpUtil();
 		LogUtil.log(WxUtil.class, "查询用户基本信息请求报文  ： " + openidList.toString(), null, LogUtilMg.LOG_INFO, CT.LOG_PATTERN_NULL);
 		JSONObject userGroup = http.wxHttpsPost(openidList, remoteUrl);
 		LogUtil.log(WxUtil.class, "查询用户基本信息请求返回  ： " + userGroup.toString(), null, LogUtilMg.LOG_INFO, CT.LOG_PATTERN_NULL);

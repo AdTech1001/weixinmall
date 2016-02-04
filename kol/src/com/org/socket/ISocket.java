@@ -4,8 +4,6 @@ import com.org.exception.SSocketConnTimeoutException;
 import com.org.exception.SSocketException;
 
 /**
- * @author Nano
- * 
  * 阻塞和非阻塞客户端由此接口派生
  * 
  * @since 2011-09-08 10:09:09

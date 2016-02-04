@@ -3,7 +3,6 @@ package com.org.cron;
 import org.springframework.core.task.TaskExecutor;
 
 /**
- * @author Nano
  * 
  * 后台服务管理器
  */

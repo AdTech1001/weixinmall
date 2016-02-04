@@ -52,9 +52,9 @@ public class DateUtil
      * 
      * @return
      */
-    public static String getCurrentDateString()
+    public static String getyyyyMMddHHmmss()
     {
-        SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT_DATE);// 设置日期格式
+        SimpleDateFormat df = new SimpleDateFormat(yyyyMMddHHmmss);// 设置日期格式
         return df.format(new Date());
     }
 

@@ -22,8 +22,6 @@ import com.org.util.CT;
 
 /**
  * 
- * @author Nano
- * 
  * 封装Servlet共用功能
  *
  */

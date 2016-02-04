@@ -16,6 +16,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;
 
+import com.org.common.CommonConstant;
+import com.org.controller.webapp.rute.Business;
 import com.org.controller.webapp.rute.RuteAdapter;
 import com.org.controller.webapp.rute.RuteThreadPool;
 import com.org.controller.webapp.utils.WxUtil;
@@ -37,7 +39,7 @@ public class WxController extends SmpHttpServlet implements CommonController{
 	 * @param response
 	 * @throws Exception
 	 */
-	public void validate(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public void rute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		log.info("token: " + this.getParamMap(request));
 		String signature = request.getParameter("signature");
 		String timestamp = request.getParameter("timestamp");
@@ -57,11 +59,9 @@ public class WxController extends SmpHttpServlet implements CommonController{
 		
 		JSONObject xmlJson = XmlUtils.getDocumentFromRequest(request);
 		log.info("收到微信服务器的消息：xmlJson=====> " + xmlJson);
-		Callable<String> event = RuteAdapter.adapter(xmlJson);
+		Business<String> event = RuteAdapter.adapter(xmlJson);
 		Future<String> result = RuteThreadPool.submit(event);
-		//Future<String> result = DealThread.dealCallable(event);
-		
-		this.write(result.get(), CT.ENCODE_UTF8, response);
+		this.write(result.get(), CommonConstant.UTF8, response);
 		return;
 	}
 	

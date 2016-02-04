@@ -94,29 +94,30 @@ public class DispatcherServlet extends HttpServlet {
 			if(StringUtils.isEmpty(mtdName)){
 				aim.post(request, response);
 			} else {
-					Method m = null;
-					String mtdKey = servletName + mtdName;
-					if(mtdContainer.containsKey(mtdKey)) {
-						m = mtdContainer.get(mtdKey);
-					} else {
-						try {
-							m = aim.getClass().getDeclaredMethod(mtdName, new Class<?>[]{HttpServletRequest.class, HttpServletResponse.class});
-						} catch (SecurityException e) {
-							e.printStackTrace();
-							targetUrl = PageConstant.ERROR;
-							request.setAttribute("respCode", "SYS001");
-							request.setAttribute("respMsg", "系统异常");
-							this.forward(targetUrl, request, response);
-						} catch (NoSuchMethodException e) {
-							e.printStackTrace();
-							targetUrl = PageConstant.ERROR;
-							request.setAttribute("respCode", "SYS002");
-							request.setAttribute("respMsg", "系统异常");
-							this.forward(targetUrl, request, response);
-						}
-						mtdContainer.put(servletName + mtdName, m);
+				Method m = null;
+				String mtdKey = servletName + mtdName;
+				if(mtdContainer.containsKey(mtdKey)) {
+					m = mtdContainer.get(mtdKey);
+				} else {
+					try {
+						m = aim.getClass().getDeclaredMethod(mtdName, new Class<?>[]{HttpServletRequest.class, HttpServletResponse.class});
+					} catch (SecurityException e) {
+						e.printStackTrace();
+						targetUrl = PageConstant.ERROR;
+						request.setAttribute("respCode", "SYS001");
+						request.setAttribute("respMsg", "系统异常");
+						this.forward(targetUrl, request, response);
+					} catch (NoSuchMethodException e) {
+						e.printStackTrace();
+						targetUrl = PageConstant.ERROR;
+						request.setAttribute("respCode", "SYS002");
+						request.setAttribute("respMsg", "系统异常");
+						this.forward(targetUrl, request, response);
 					}
-					
+					mtdContainer.put(servletName + mtdName, m);
+				}
+				
+				if(m != null) {
 					try {
 						m.invoke(aim, request, response);
 					} catch (IllegalArgumentException e) {
@@ -126,6 +127,7 @@ public class DispatcherServlet extends HttpServlet {
 					} catch (InvocationTargetException e) {
 						e.printStackTrace();
 					}
+				}
 			}
 			//流程执行完，更新tokenParam
 			request.getSession().removeAttribute(servletName);
