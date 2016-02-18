@@ -29,9 +29,15 @@ public class SmpHttpServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	
-	protected void forward(String targetUrl,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+	protected void forward(String targetUrl,HttpServletRequest request, HttpServletResponse response){
 		RequestDispatcher rd = request.getRequestDispatcher(targetUrl);
-		rd.forward(request, response);
+		try {
+			rd.forward(request, response);
+		} catch (ServletException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	protected void redirect(String targetUrl,HttpServletResponse response) throws Exception{
@@ -74,21 +80,29 @@ public class SmpHttpServlet extends HttpServlet {
 		}
 	}
 	
-	protected void write(String noticeData,String charsetName,HttpServletResponse response)throws Exception{
+	protected void write(String noticeData,String charsetName,HttpServletResponse response) throws IOException {
 		ServletOutputStream out = null;
-		try{
-			out = response.getOutputStream();
-			
-			out.write(noticeData.getBytes(charsetName));
-			
-			out.flush();
-		}catch(Exception e){
-			LogUtil.log(CT.LOG_CATEGORY_ERR, "输出流写数据过程失败,原因：" + e.getMessage(), e, LogUtilMg.LOG_ERROR, CT.LOG_CATEGORY_ERR);
-			throw e;
-		}finally{
-			
-		}
+		out = response.getOutputStream();
+		out.write(noticeData.getBytes(charsetName));
+		out.flush();
 	}
+	
+//	暂时不知道为什么要try catch
+//	protected void write(String noticeData,String charsetName,HttpServletResponse response)throws Exception{
+//		ServletOutputStream out = null;
+//		try{
+//			out = response.getOutputStream();
+//			
+//			out.write(noticeData.getBytes(charsetName));
+//			
+//			out.flush();
+//		}catch(Exception e){
+//			LogUtil.log(CT.LOG_CATEGORY_ERR, "输出流写数据过程失败,原因：" + e.getMessage(), e, LogUtilMg.LOG_ERROR, CT.LOG_CATEGORY_ERR);
+//			throw e;
+//		}finally{
+//			
+//		}
+//	}
 	
 	protected void write(JSONObject data,String dataKey,String format,String charset,HttpServletResponse response) throws Exception {
 		PrintWriter out = null;

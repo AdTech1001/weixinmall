@@ -9,8 +9,8 @@ import java.util.Map;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+//import org.apache.commons.logging.Log;
+//import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
 
 import com.org.exception.SvcException;
@@ -47,7 +47,7 @@ public class CommonDao extends BaseDao {
 		return jo;
 	}
 
-	public <T> T querySingle(Class<T> entityClass, String sql, Map<Integer, Object> params) throws SvcException {
+	public <T> T querySingle(Class<T> entityClass, String sql, Map<Integer, Object> params) {
 		T entity = null;
 		try {
 			entity = entityClass.newInstance();
@@ -80,6 +80,25 @@ public class CommonDao extends BaseDao {
 		return list;
 	}
 
+	public JSONArray queryJSONArray(String sql, Map<Integer, Object> params) {
+		JSONArray list = new JSONArray();
+		try {
+			list = queryList(sql, params, null);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	/**
+	 * 需要加密某列的查询
+	 * @param sql
+	 * @param secretColumn 需要对值进行加密的列名
+	 * @return
+	 */
 	public JSONArray queryJSONArray(String sql, List<String> secretColumn) {
 		JSONArray list = null;
 		try {
@@ -92,6 +111,24 @@ public class CommonDao extends BaseDao {
 
 		return list;
 	}
+	
+	/**
+	 * 需要加密某列的查询
+	 * @param sql
+	 * @return
+	 */
+	public JSONArray queryJSONArray(String sql) {
+		JSONArray list = null;
+		try {
+			list = queryList(sql, null, null);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
 
 	/**
 	 * @param entityClass
@@ -100,8 +137,7 @@ public class CommonDao extends BaseDao {
 	 *            ?,?,? {1:"...", 2:"...", 3:"..."}
 	 * @return
 	 */
-	public <T> List<T> queryList(Class<T> entityClass, String sql,
-			Map<Integer, Object> params) {
+	public <T> List<T> queryList(Class<T> entityClass, String sql, Map<Integer, Object> params) {
 		T entity = null;
 		try {
 			entity = entityClass.newInstance();
@@ -130,7 +166,6 @@ public class CommonDao extends BaseDao {
 	 * @return
 	 * @return
 	 * @throws SQLException
-	 * @throws SvcException
 	 */
 	public synchronized <T> boolean addSingle(String sql, Map<Integer, Object> params) {
 		java.sql.Connection conn = getConnection();
@@ -252,5 +287,5 @@ public class CommonDao extends BaseDao {
 		}
 	}
 	
-	private Log log = LogFactory.getLog(CommonDao.class);
+	//private Log log = LogFactory.getLog(CommonDao.class);
 }

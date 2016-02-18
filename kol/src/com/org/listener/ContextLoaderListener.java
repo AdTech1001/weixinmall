@@ -8,9 +8,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.context.ContextLoader;
 
+import com.org.caches.RoomContainer;
 import com.org.container.CommonContainer;
-import com.org.controller.webapp.utils.WxUtil;
 import com.org.utils.PropertyUtil;
+import com.org.wx.utils.WxUserUtil;
+import com.org.wx.utils.WxUtil;
 
 public class ContextLoaderListener implements ServletContextListener{
 
@@ -70,6 +72,9 @@ public class ContextLoaderListener implements ServletContextListener{
 		
 	    // 开启定时获取token任务
 	    WxUtil.autoRun();
+		
+	    // 初始化聊天室房间信息
+	    RoomContainer.initRoom();
 	    
 		/*12. init guice with mybatis */
 		/*log.info("Integrate Smp With Guice Container Begin....");

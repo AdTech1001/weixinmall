@@ -8,12 +8,12 @@ import java.util.Map;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
 import com.org.dao.CommonDao;
-import com.org.exception.SvcException;
 import com.org.util.SpringUtil;
 import com.org.utils.DateUtil;
 
@@ -53,19 +53,64 @@ public class WxUserService {
 	private static String sql_update = "update wx_user_info set nickname= ?, sex= ?, "
 			+ "subscribe= ?, subscribe_time= ?, headimgurl= ?, country= ?, province= ?, city= ? where openid =?";
 	
-	private static String sql_query = "select * from wx_user_info where openid = ?";
+	private static String sql_query_by_openid = "select * from wx_user_info where openid = ?";
+	
+	// 0:未关注  1 已关注
+	private static String sql_query_by_subscribe = "select * from wx_user_info where subscribe = ?";
+	
+	private static String sql_query_all = "select * from wx_user_info";
 	
 	public JSONObject query(String openid){
 		Map<Integer, Object> params = new HashMap<Integer, Object>();
 		params.put(1, openid);
 		CommonDao commonDao = (CommonDao)SpringUtil.getBean("commonDao");
-		JSONObject res = new JSONObject();
-		try {
-			res = commonDao.querySingle(JSONObject.class, sql_query, params);
-		} catch (SvcException e) {
-			e.printStackTrace();
+		JSONObject res = commonDao.querySingle(JSONObject.class, sql_query_by_openid, params);
+		return res;
+	}
+	
+	/**
+	 * 查询所有
+	 * @param subscribe 是否关注 0:未关注  1 已关注 ; 如果参数为null, 则表示查询所有
+	 * @return
+	 */
+	public JSONArray queryAll(String subscribe){
+		CommonDao commonDao = (CommonDao)SpringUtil.getBean("commonDao");
+		JSONArray res = new JSONArray();
+		if(StringUtils.isEmpty(subscribe)) {
+			res = commonDao.queryJSONArray(sql_query_all);
+		} else {
+			Map<Integer, Object> params = new HashMap<Integer, Object>();
+			params.put(1, subscribe);
+			res = commonDao.queryJSONArray(sql_query_by_subscribe, params);
 		}
 		return res;
+	}
+	
+	/**
+	 * 保存并返回查询结果
+	 * @param userInfoFromWx 调用微信接口查询得到的用户信息
+	 * @return
+	 */
+	public JSONObject saveAndReturn(JSONObject userInfoFromWx){
+
+		String openid = userInfoFromWx.getString("openid");
+		String nickname = userInfoFromWx.getString("nickname");
+		nickname = nickname.replace("🌻", "*");
+		
+		String sex = userInfoFromWx.getString("sex");
+		String subscribe_time = DateUtil.getyyyyMMddHHmmss();
+		String subscribe = userInfoFromWx.getString("subscribe");
+		String headimgurl = userInfoFromWx.getString("headimgurl");
+		String country = userInfoFromWx.getString("country");
+		String province = userInfoFromWx.getString("province");
+		String city = userInfoFromWx.getString("city");
+		boolean saveRes = save(openid, nickname, sex, subscribe_time, subscribe, headimgurl, country, province, city);
+		
+		JSONObject result = null;
+		if(saveRes) {
+			result = query(openid);
+		}
+		return result;
 	}
 	
 	/**
@@ -125,6 +170,50 @@ public class WxUserService {
 		params.put(9, openid);
 		CommonDao commonDao = (CommonDao)SpringUtil.getBean("commonDao");
 		boolean res = commonDao.update(sql_update, params);
+		return res;
+	}
+	
+
+
+	/**
+	 * 事务 已有数据更新，无则插入； 没值的字段一定要是null不能是""
+	 * @param openid 微信openid
+	 * @param nickname 微信昵称
+	 * @param sex 微信性别
+	 * @param subscribe_time 关注时间
+	 * @param subscribe 是否关注 0:未关注  1 已关注
+	 * @param headimgurl 头像
+	 * @param country 国家
+	 * @param province 省份
+	 * @param city 城市
+	 * @return
+	 */
+	public boolean saveOrUpdate (String openid, String nickname, String sex, String subscribe_time, 
+			String subscribe, String headimgurl, String country, String province, String city){
+		
+		Map<Integer, Object> params = null;
+		params = new HashMap<Integer, Object>();
+		params.put(1, openid);
+		params.put(2, nickname);
+		params.put(3, sex);
+		params.put(4, subscribe);
+		params.put(5, subscribe_time);
+		params.put(6, headimgurl);
+		params.put(7, country);
+		params.put(8, province);
+		params.put(9, city);
+		
+		params.put(10, nickname);
+		params.put(11, sex);
+		params.put(12, subscribe);
+		params.put(13, subscribe_time);
+		params.put(14, headimgurl);
+		params.put(15, country);
+		params.put(16, province);
+		params.put(17, city);
+			
+		CommonDao commonDao = (CommonDao)SpringUtil.getBean("commonDao");
+		boolean res = commonDao.addSingle(sql_save_or_update, params);
 		return res;
 	}
 

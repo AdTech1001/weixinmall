@@ -1,7 +1,10 @@
 eclipse.preferences.version=1
 encoding//WebContent/index.jsp=UTF-8
 encoding//src/com/org=gbk
+encoding//src/com/org/controller/MallController.java=UTF-8
 encoding//src/com/org/controller/WxController.java=UTF-8
+encoding//src/com/org/services/RoomService.java=UTF-8
 encoding//src/com/org/services/WxUserService.java=UTF-8
+encoding//src/com/org/wx/utils/WxUserUtil.java=UTF-8
 encoding/<project>=UTF-8
 encoding/WebContent=UTF-8

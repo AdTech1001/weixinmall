@@ -2,7 +2,7 @@ package com.org.controller;
 
 import java.io.IOException;
 import java.util.UUID;
-import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import javax.servlet.ServletException;
@@ -17,14 +17,16 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;
 
 import com.org.common.CommonConstant;
-import com.org.controller.webapp.rute.Business;
-import com.org.controller.webapp.rute.RuteAdapter;
-import com.org.controller.webapp.rute.RuteThreadPool;
-import com.org.controller.webapp.utils.WxUtil;
+import com.org.interfaces.controller.CommonController;
+import com.org.interfaces.rute.Business;
+import com.org.rute.RuteAdapter;
+import com.org.rute.RuteThreadPool;
 import com.org.servlet.SmpHttpServlet;
 import com.org.util.CT;
+import com.org.utils.DateUtil;
 import com.org.utils.StringUtil;
 import com.org.utils.XmlUtils;
+import com.org.wx.utils.WxUtil;
 
 @Controller
 public class WxController extends SmpHttpServlet implements CommonController{
@@ -59,10 +61,28 @@ public class WxController extends SmpHttpServlet implements CommonController{
 		
 		JSONObject xmlJson = XmlUtils.getDocumentFromRequest(request);
 		log.info("收到微信服务器的消息：xmlJson=====> " + xmlJson);
-		Business<String> event = RuteAdapter.adapter(xmlJson);
-		Future<String> result = RuteThreadPool.submit(event);
-		this.write(result.get(), CommonConstant.UTF8, response);
+		
+		String result = dealBusiness(xmlJson);
+		this.write(result, CommonConstant.UTF8, response);
 		return;
+	}
+	
+	private String dealBusiness(JSONObject xmlJson){
+		Business<String> event = RuteAdapter.adapter(xmlJson);
+		String dateStr = DateUtil.getyyyyMMddHHmmss();
+		try {
+			Future<String> result = RuteThreadPool.submit(event);
+			if(result != null) {
+				return result.get();
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			log.info(dateStr + "--> dealBusiness InterruptedException: " + e.getMessage());
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+			log.info(dateStr + "--> dealBusiness ExecutionException: " + e.getMessage());
+		}
+		return WxUtil.replyStr("系统出现异常，请联系管理员，错误时间：" + dateStr, xmlJson);
 	}
 	
 	// TODO 测试用的
@@ -82,8 +102,9 @@ public class WxController extends SmpHttpServlet implements CommonController{
 		return;
 	}
 	
-	public void initBottomMenu(HttpServletRequest request, HttpServletResponse response) {
-		WxUtil.createBottomMenu();
+	public void initMenu(HttpServletRequest request, HttpServletResponse response) {
+		String resMsg = WxUtil.createMenu();
+		request.setAttribute(CommonConstant.RESP_MSG, resMsg);
 		//this.forward("/www/html/wxtest.jsp", request, response);
 		return;
 	}

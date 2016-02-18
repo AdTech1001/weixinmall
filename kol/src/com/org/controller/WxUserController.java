@@ -6,20 +6,19 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.springframework.stereotype.Controller;
 
-import com.org.controller.webapp.utils.Memcache;
-import com.org.controller.webapp.utils.WxUserUtil;
-import com.org.controller.webapp.utils.WxUtil;
-import com.org.services.WxUserService;
+import com.org.caches.Memcache;
+import com.org.common.CommonConstant;
+import com.org.interfaces.controller.CommonController;
 import com.org.servlet.SmpHttpServlet;
-import com.org.util.SpringUtil;
+import com.org.utils.HttpTool;
+import com.org.utils.HttpUtil;
 import com.org.utils.PropertyUtil;
-import com.org.utils.http.HttpTool;
-import com.org.utils.http.impl.HttpUtil;
+import com.org.wx.utils.WxUserUtil;
+import com.org.wx.utils.WxUtil;
 
 @Controller
 public class WxUserController extends SmpHttpServlet implements CommonController{
@@ -37,12 +36,9 @@ public class WxUserController extends SmpHttpServlet implements CommonController
 	 * @throws IOException
 	 */
 	public void initUserInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// 1 先获取本微信公众号的所有用户openid
-		JSONArray openidArray = WxUserUtil.getOpenidList();
-		JSONArray userInfoList = WxUserUtil.getUserInfoByOpenidList(openidArray);
-		// 调用dao事务插入方法
-		WxUserService wxDao = (WxUserService)SpringUtil.getBean("wxUserService");
-		wxDao.transactionSaveOrUpdate(userInfoList);
+		String resMsg = WxUserUtil.initUserInfo();
+		request.setAttribute(CommonConstant.RESP_MSG, resMsg);
+		this.forward("/manager/result.jsp", request, response);
 		return;
 	}
 
@@ -56,7 +52,7 @@ public class WxUserController extends SmpHttpServlet implements CommonController
 	 * @throws IOException
 	 */
 	public void getGroupidList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String token = Memcache.getInstance().getValue(WxUtil.WX_TOKEN_KEY);
+		String token = Memcache.getInstance().getValue(CommonConstant.WX_TOKEN_KEY);
 		String remoteUrl = PropertyUtil.getValue("wx", "wx_get_groupid").concat(token);
 		
 		HttpTool http = new HttpUtil();

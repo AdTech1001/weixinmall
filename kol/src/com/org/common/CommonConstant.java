@@ -1,7 +1,9 @@
 package com.org.common;
 
+import com.org.utils.PropertyUtil;
+
 public class CommonConstant {
-	
+	public static String WX_TOKEN_KEY = "wxToken"+PropertyUtil.getValue("wx", "appid"); // 微信端的token key
 	public static String UTF8 = "utf-8";
 	public final static String DB_MONGO = "mongo";
 	public final static String DB_MYSQL = "hikaricp-mysql";
@@ -68,5 +70,9 @@ public class CommonConstant {
 	 * 注册类型: 用户
 	 */
 	public static final String REGIST_TYPE_PERSON = "1";
+	/**
+	 * 微信用户session key
+	 */
+	public static final String WX_USER_SESSION = "wxuser";
 	
 }
