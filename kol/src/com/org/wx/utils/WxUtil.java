@@ -119,6 +119,10 @@ public class WxUtil {
 	public static String getSecret() {
 		return SECRET;
 	}
+	
+	public static String getAppid() {
+		return APPID;
+	}
 
 	/**
 	 * 

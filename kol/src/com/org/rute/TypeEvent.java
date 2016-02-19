@@ -6,8 +6,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.org.caches.RoomContainer;
-import com.org.common.CommonConstant;
-import com.org.container.WxSession;
 import com.org.controller.WxConstant;
 import com.org.interfaces.rute.Business;
 import com.org.model.WxUser;
@@ -73,18 +71,6 @@ public class TypeEvent implements Business<String> {
 			WxUserService uService = (WxUserService)SpringUtil.getBean("wxUserService");
 			uService.saveOrUpdate(FromUserName, nickname, sex, subscribe_time, subscribe, headimgurl, country, province, city);
 
-		} else if(Event.equals("VIEW")) {
-			// {"ToUserName":"gh_b4c1774a1ef7","FromUserName":"osp6swrNZiWtEuTy-Gj1cBVA1l38","CreateTime":"1455608464","MsgType":"event","Event":"VIEW","EventKey":"http://bangmaisiw.w107.mc-test.com/wap/News.php","MenuId":"403078782"}
-			if(EventKey.contains("mall.do")) {
-				// 表示进入商城
-				// 登录存放用户session信息
-				WxSession temp = WxSession.getInstance();
-				if(temp.getAttribute(FromUserName) == null) {
-					WxUser wxUser = new WxUser(FromUserName);
-					// 键为openid， 值为用户对象
-					temp.setAttribute(FromUserName, wxUser);
-				}
-			}
 		}
 		// 
 		return WxConstant.RETURN_SUCCESS;

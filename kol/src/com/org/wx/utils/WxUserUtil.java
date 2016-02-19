@@ -24,7 +24,8 @@ public class WxUserUtil {
 	
 	private static final String WX_GET_BATCH_USER_INFO = PropertyUtil.getValue("wx", "wx_get_batch_user_baseinfo");
 	private static final String WX_GET_USER_BASEINFO = PropertyUtil.getValue("wx", "wx_get_user_baseinfo");
-
+	private static String AUTH_URL = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=";
+	
 	/**
 	 * 获取userList 
 	 * 数据示例：{"total":13,"count":13,"data":{"openid":["osp6swkdED28-Bo9k0zV1TBfAVwM","osp6swsMgghqE9kB-58Jd_411bCg","osp6swk9_DfmWZ093q8ShHchMjdM","osp6swvOvVa1aXcjbFGui0Ur88V4","osp6swkQTyVxg6GhdBhlad9FKZBU","osp6swlzafjgKrXIJXTW9q5RiV74","osp6swoC_jT04slc3TKFddSgO45c","osp6swpoMllDnL5hsshCXklZXsVg","osp6swnBLWkDJWivjzzvg4wi_fZY","osp6swnoZMzfQAuaaiVr1p90W2qk","osp6swlTQrl7KzkgaQTsjPcTIrB8","osp6swrNZiWtEuTy-Gj1cBVA1l38","osp6swkgabGhn7_Jqt7zGU90095A"]},"next_openid":"osp6swkgabGhn7_Jqt7zGU90095A"}
@@ -137,5 +138,25 @@ public class WxUserUtil {
 		JSONObject result = http.wxHttpsPost(requestJson, remoteUrl);
 		log.info("getUserBaseInfo：响应参数" + result.toString());
 		return result;
+	}
+
+	/**
+	 * 通过授权认证获得用户openid. 本例属于用户已关注，所以不需要用户授权
+	 * @param code
+	 * @return openid
+	 */
+	public static String oauth(String code) {
+		String secret = WxUtil.getSecret();
+		String appid = WxUtil.getAppid();
+		HttpTool http = new HttpUtil();
+		String url = AUTH_URL.concat(appid).concat("&secret=").concat(secret).concat("&code=").concat(code).concat("&grant_type=authorization_code");
+		JSONObject res = http.wxHttpsGet(null, url);
+		log.info("oauth===>"+res.toString());
+		// {"access_token":"OezXcEiiBSKSxW0eoylIeG_LpV4TpnX-BxNbAVVAasaRyPm55zyI9CKaVNciQOEw8iu_pEDXCiBKbbSJbzzqarhyfecqXoplnmCl7HsBiWFARy1Ob3MealEkubEDs8KHeRbAr5Awrvr7RR3i5t24GA","expires_in":7200,"refresh_token":"OezXcEiiBSKSxW0eoylIeG_LpV4TpnX-BxNbAVVAasaRyPm55zyI9CKaVNciQOEwUHOmtG9PkoiFUefqTDaX00sVqxhfoyE-jbYDCIjldLBnZvj1QP0gGev-Tw2BWQWTdIOnZ9EQDB0Oi0w2ZlT0lA","openid":"osp6swrNZiWtEuTy-Gj1cBVA1l38","scope":"snsapi_base"}
+		if(res.containsKey("openid")) {
+			return res.getString("openid");
+		}
+		return null;
+		
 	}
 }
