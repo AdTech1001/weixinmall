@@ -31,11 +31,11 @@ public class MallController extends SmpHttpServlet implements CommonController{
 		// {state=123, code=031bc730cca7eb3ab51ba8322130801I}
 		// 用户授权。
 		String code = request.getParameter("code");
-		String secret = WxUtil.getSecret();
-		String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx6f9dc2bfd436b651&secret="+secret+"&code="+code+"&grant_type=authorization_code";
-		HttpTool http = new HttpUtil();
-		JSONObject res = http.wxHttpsGet(null, url);
-		log.info(res.toString());
+//		String secret = WxUtil.getSecret();
+//		String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx6f9dc2bfd436b651&secret="+secret+"&code="+code+"&grant_type=authorization_code";
+//		HttpTool http = new HttpUtil();
+//		JSONObject res = http.wxHttpsGet(null, url);
+//		log.info(res.toString());
 		// {"access_token":"OezXcEiiBSKSxW0eoylIeG_LpV4TpnX-BxNbAVVAasaRyPm55zyI9CKaVNciQOEw8iu_pEDXCiBKbbSJbzzqarhyfecqXoplnmCl7HsBiWFARy1Ob3MealEkubEDs8KHeRbAr5Awrvr7RR3i5t24GA","expires_in":7200,"refresh_token":"OezXcEiiBSKSxW0eoylIeG_LpV4TpnX-BxNbAVVAasaRyPm55zyI9CKaVNciQOEwUHOmtG9PkoiFUefqTDaX00sVqxhfoyE-jbYDCIjldLBnZvj1QP0gGev-Tw2BWQWTdIOnZ9EQDB0Oi0w2ZlT0lA","openid":"osp6swrNZiWtEuTy-Gj1cBVA1l38","scope":"snsapi_base"}
 		
 		String openid = WxUserUtil.oauth(code);

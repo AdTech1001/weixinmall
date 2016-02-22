@@ -34,23 +34,8 @@
 
 <body>
 	<%@ include file="/common/menu.jsp"%>
-	<div id="banner">
-		<div id="slideBox" class="slideBox">
-			<div class="bd">
-				<ul>
-					<c:set var="bannerArray" value="${fn:split('images/banner-emotion.jpg', ',') }" />
-					<c:forEach var="banner" items="${bannerArray }">
-						<li>
-							<a href="javascript:void(0);">
-								<img src="/${banner}">
-							</a>
-						</li>
-					</c:forEach>
-				</ul>
-			</div>
-		</div>
-	</div>
 	<div class="container">
+		${wxuser.nickname}
 		<div class="comwidth">
 			<section class="first left">
 				<a href="/wxUser/initUserInfo.do">微信用户同步</a>

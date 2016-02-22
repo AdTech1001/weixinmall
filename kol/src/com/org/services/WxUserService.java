@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -231,7 +233,6 @@ public class WxUserService {
 	 * @return
 	 */
 	public boolean transactionSaveOrUpdate (JSONArray userInfoList){
-		
 		JSONObject userTemp = null;
 		Map<Integer, Object> params = null;
 		List<Map<Integer, Object>> paramsList = new ArrayList<Map<Integer,Object>>();
@@ -239,7 +240,8 @@ public class WxUserService {
 			userTemp = userInfoList.getJSONObject(i);
 			String openid = userTemp.getString("openid");
 			String nickname = userTemp.getString("nickname");
-			nickname = nickname.replace("🌻", "*");
+			log.info("transactionSaveOrUpdate " + i +": "+ openid + " ; old nickname : " + nickname);
+			nickname = matchStr(nickname);
 			
 			String sex = userTemp.getString("sex");
 			String subscribe_time = DateUtil.getyyyyMMddHHmmss();
@@ -249,7 +251,6 @@ public class WxUserService {
 			String province = userTemp.getString("province");
 			String city = userTemp.getString("city");
 
-			log.info("transactionSaveOrUpdate " + i +": "+ nickname);
 
 			params = new HashMap<Integer, Object>();
 			params.put(1, openid);
@@ -276,5 +277,37 @@ public class WxUserService {
 		boolean res = commonDao.transactionInsert(sql_save_or_update, paramsList);
 		return res;
 	}
+	
+	private String matchStr(String from){
+		Pattern pattern = Pattern.compile(pattrn);
+		Matcher matcher = pattern.matcher(from);
+		
+		StringBuffer sbr = new StringBuffer();
+		while (matcher.find()) {
+		    //matcher.appendReplacement(sbr, "*");
+			sbr.append(matcher.group());
+		}
+		String res = sbr.toString();
+		log.info("matchStr new nickname : " + res);
+		return res;
+	}
+	
+	public static void main(String[] args) {
+		String str = "中是H★ 要 H★KかS  Micky ߌ»Icey  Storm hߔ®";
+		
+		Pattern pattern = Pattern.compile(pattrn);
+		Matcher matcher = pattern.matcher(str);
+		
+		StringBuffer sbr = new StringBuffer();
+		while (matcher.find()) {
+			sbr.append(matcher.group());
+		}
+		String res = sbr.toString();
+		System.err.println(res);
+	}
+	
 	private Log log = LogFactory.getLog(WxUserService.class);
+	// String str = "中是H★ 要 H★KかS  Micky ߌ»Icey  Storm hߔ®"; // 测试字符串
+	private static String pattrn = "[\u4e00-\u9fa5]+|[a-z]+|[A-Z]+| |[0-9]+";
 }
+

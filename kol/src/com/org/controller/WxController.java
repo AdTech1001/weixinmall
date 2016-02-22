@@ -104,6 +104,7 @@ public class WxController extends SmpHttpServlet implements CommonController{
 	
 	public void initMenu(HttpServletRequest request, HttpServletResponse response) {
 		String resMsg = WxUtil.createMenu();
+		log.info("initMenu ====> " + resMsg);
 		request.setAttribute(CommonConstant.RESP_MSG, resMsg);
 		//this.forward("/www/html/wxtest.jsp", request, response);
 		return;
