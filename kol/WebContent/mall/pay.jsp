@@ -40,34 +40,31 @@
 <body>
 	<div class="container">
 		<div>
-			${wxuser.nickname}
-			<c:if test="${empty wxuser.password }">
-				未设置登录密码，建议您<a href="javascript:void(0);" onclick="showSetPwd();">设置</a>
-			</c:if>
-			<br />
-			<br />
-		</div>
-		
-		<c:forEach items="${productList }" var="product">
+			<div class="product_pic"><img src="${product.mainpic }" /></div>
+			<div>${product.name }</div>
+			<div>￥ ${product.price }</div>
 			<div>
-				<div class="product_pic"><img src="${product.mainpic }" /></div>
-				<div>${product.name }</div>
-				<div>￥ ${product.price }</div>
-				<div>月销 66  笔 包邮
-					<span onclick="todo();">加入购物车</span>
-					<span onclick="directorder('${product.id }');">直接购买</span>
-				</div>
+				<div><a href="javascript:void(0);" onclick="pay('p0001');" class="">微信支付</a></div>
+				<div><a href="javascript:void(0);" onclick="pay('p0002');" class="">网银支付</a></div>
+				<div><a href="javascript:void(0);" onclick="pay('p0003');" class="">杉德支付</a></div>
 			</div>
-			<hr />
-		</c:forEach>
+		</div>
+		<hr />
+		<form action="/mall/pay.do" id="formToPay" method="post">
+			<input type="hidden" name="payUtilId" id="payUtilId" />
+			<input type="hidden" name="orderId" value="${orderId }" />
+		</form>
 	</div>
 </body>
 
 <script type="text/javascript" src="/js/common.js"></script>
 <script type="text/javascript" src="/js/business.js"></script>
 <script type="text/javascript">
-function directorder(productid){
-	window.location.href="/order/directBuy.do?productid="+productid;
+function pay(payUtilId){
+	var payUtilTemp = document.getElementById("payUtilId");
+	payUtilTemp.value = payUtilId;
+	var topayForm = document.getElementById("formToPay");
+	topayForm.submit();
 }
 </script>
 </html>

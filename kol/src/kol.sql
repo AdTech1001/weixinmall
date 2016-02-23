@@ -186,5 +186,25 @@ CREATE TABLE `kol_operate_tracking` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+
+-- ----------------------------
+-- Table structure for `kol_testimonials_totop` 置顶
+-- ----------------------------
+DROP TABLE IF EXISTS `wx_product_info`;
+CREATE TABLE `wx_product_info` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `stocks` int NOT NULL,
+  `mainpic` varchar(200),
+  `blongsto` varchar(50),
+  `orderby` int NOT NULL,
+  `createtime` varchar(14),
+  `updatetime` varchar(14),
+  `createby` varchar(50),
+  `comments` varchar(500),
+   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --------------------- TODO resource
 

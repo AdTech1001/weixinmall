@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONObject;
-
 import org.springframework.stereotype.Service;
 
 import com.org.dao.CommonDao;

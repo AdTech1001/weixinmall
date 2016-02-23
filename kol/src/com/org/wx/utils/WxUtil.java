@@ -288,11 +288,6 @@ public class WxUtil {
 				// 初始化菜单
 				createMenu();
 			}
-			
-			if(res) {
-				// 初始化用户基本信息， 一定是在token初始化完毕后执行
-				WxUserUtil.initUserInfo();
-			}
 		}
 	}
 

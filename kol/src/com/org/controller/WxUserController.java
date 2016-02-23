@@ -36,7 +36,7 @@ public class WxUserController extends SmpHttpServlet implements CommonController
 	 * @throws IOException
 	 */
 	public void initUserInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String resMsg = WxUserUtil.initUserInfo();
+		String resMsg = WxUserUtil.synchUserInfo();
 		request.setAttribute(CommonConstant.RESP_MSG, resMsg);
 		this.forward("/manager/result.jsp", request, response);
 		return;

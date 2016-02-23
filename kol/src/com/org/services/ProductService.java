@@ -1,6 +1,5 @@
 package com.org.services;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,34 +10,21 @@ import java.util.regex.Pattern;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
 import com.org.dao.CommonDao;
-import com.org.util.Base64;
 import com.org.util.SpringUtil;
 import com.org.utils.DateUtil;
 
 /**
- * 用于同步微信用户信息
+ * 商品信息管理
  * @author Administrator
  *
  */
 @Service
-public class WxUserService {
-	// 这种方式是要用if函数判断的，感觉开销稍微有点大，
-//	private static String sql_insert = "insert into wx_user_info (openid, nickname, sex, subscribe, subscribe_time, headimgurl, country, province, city) values (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-//			+ "on duplicate key update "
-//			+ "nickname = IF((ISNULL(?) || LENGTH(?)<=0), nickname, '?'), "
-//			+ "sex = IF((ISNULL(?) || LENGTH(?)<=0), sex, '?'), "
-//			+ "subscribe = IF((ISNULL(?) || LENGTH(?)<=0), subscribe, '?'), "
-//			+ "subscribe_time = IF((ISNULL(?) || LENGTH(?)<=0), subscribe_time, '?'), "
-//			+ "headimgurl = IF((ISNULL(?) || LENGTH(?)<=0), headimgurl, '?'), "
-//			+ "country = IF((ISNULL(?) || LENGTH(?)<=0), country, '?'), "
-//			+ "province = IF((ISNULL(?) || LENGTH(?)<=0), province, '?'), "
-//			+ "city = IF((ISNULL(?) || LENGTH(?)<=0), city, '?') ";
+public class ProductService {
 	
 //  这种方法是用ifnull函数判断，但是ifnull只认null 不认''， 所以要保证进入的参数值要么有值，要么是null， 空字符串一定要转换成null
 	private static String sql_save_or_update = "insert into wx_user_info (openid, nickname, sex, subscribe, subscribe_time, headimgurl, country, province, city) values (?, ?, ?, ?, ?, ?, ?, ?, ?)"
@@ -57,94 +43,35 @@ public class WxUserService {
 	private static String sql_update = "update wx_user_info set nickname= ?, sex= ?, "
 			+ "subscribe= ?, subscribe_time= ?, headimgurl= ?, country= ?, province= ?, city= ? where openid =?";
 	
-	private static String sql_query_by_openid = "select * from wx_user_info where openid = ?";
+	private static String sql_query_by_id = "select * from wx_product_info where id = ?";
 	
-	// 0:未关注  1 已关注
-	private static String sql_query_by_subscribe = "select * from wx_user_info where subscribe = ?";
+	private static String sql_query_all = "select * from wx_product_info";
 	
-	private static String sql_query_all = "select * from wx_user_info";
-	
-	public JSONObject query(String openid){
+	public JSONObject query(Integer id){
 		Map<Integer, Object> params = new HashMap<Integer, Object>();
-		params.put(1, openid);
+		params.put(1, id);
 		CommonDao commonDao = (CommonDao)SpringUtil.getBean("commonDao");
-		JSONObject res = commonDao.querySingle(JSONObject.class, sql_query_by_openid, params);
-		// 由于用户名的特殊，在存储到数据库的时候，都是使用的base64转码字符
-		// 所以在取出的时候，要再base64解码
-		String nickname = res.getString("nickname");
-		try {
-			nickname = new String(Base64.decode(nickname), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			log.info("Base64解码失败: " + nickname);
-			e.printStackTrace();
-		}
-		res.put("nickname", nickname);
+		JSONObject res = commonDao.querySingle(JSONObject.class, sql_query_by_id, params);
 		return res;
 	}
 	
 	/**
 	 * 查询所有
-	 * @param subscribe 是否关注 0:未关注  1 已关注 ; 如果参数为null, 则表示查询所有
-	 * @return
+	 * @return 所有商品列表
 	 */
-	public JSONArray queryAll(String subscribe){
+	public JSONArray queryAll(){
 		CommonDao commonDao = (CommonDao)SpringUtil.getBean("commonDao");
-		JSONArray res = new JSONArray();
-		if(StringUtils.isEmpty(subscribe)) {
-			res = commonDao.queryJSONArray(sql_query_all);
-		} else {
-			Map<Integer, Object> params = new HashMap<Integer, Object>();
-			params.put(1, subscribe);
-			res = commonDao.queryJSONArray(sql_query_by_subscribe, params);
-		}
-		
-		JSONObject temp = null;
-		for (int i = 0; i < res.size(); i++) {
-			temp = res.getJSONObject(i);
-			String nickname = temp.getString("nickname");
-			try {
-				nickname = new String(Base64.decode(nickname), "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				log.info("queryAll Base64解码失败: " + nickname);
-				e.printStackTrace();
-			}
-			temp.put("nickname", nickname);
-		}
+		JSONArray res = commonDao.queryJSONArray(sql_query_all);
 		return res;
 	}
 	
 	/**
 	 * 保存并返回查询结果
-	 * @param userInfoFromWx 调用微信接口查询得到的用户信息
 	 * @return
 	 */
 	public JSONObject saveAndReturn(JSONObject userInfoFromWx){
-
-		String openid = userInfoFromWx.getString("openid");
-		String nickname = userInfoFromWx.getString("nickname");
-		//nickname = nickname.replace("🌻", "*");
-		try {
-			nickname = Base64.encode(nickname.getBytes("UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			log.info("saveAndReturn" + nickname + "转码Base64失败，使用截除方案" );
-			nickname = matchStr(nickname);
-		}
-		
-		
-		String sex = userInfoFromWx.getString("sex");
-		String subscribe_time = DateUtil.getyyyyMMddHHmmss();
-		String subscribe = userInfoFromWx.getString("subscribe");
-		String headimgurl = userInfoFromWx.getString("headimgurl");
-		String country = userInfoFromWx.getString("country");
-		String province = userInfoFromWx.getString("province");
-		String city = userInfoFromWx.getString("city");
-		boolean saveRes = save(openid, nickname, sex, subscribe_time, subscribe, headimgurl, country, province, city);
-		
-		JSONObject result = null;
-		if(saveRes) {
-			result = query(openid);
-		}
-		return result;
+		//TODO
+		return null;
 	}
 	
 	/**
@@ -225,13 +152,6 @@ public class WxUserService {
 	public boolean saveOrUpdate (String openid, String nickname, String sex, String subscribe_time, 
 			String subscribe, String headimgurl, String country, String province, String city){
 		
-		try {
-			nickname = Base64.encode(nickname.getBytes("UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			log.info("saveOrUpdate" + nickname + "转码Base64失败，使用截除方案" );
-			nickname = matchStr(nickname);
-		}
-		
 		Map<Integer, Object> params = null;
 		params = new HashMap<Integer, Object>();
 		params.put(1, openid);
@@ -280,12 +200,7 @@ public class WxUserService {
 			String openid = userTemp.getString("openid");
 			String nickname = userTemp.getString("nickname");
 			log.info("transactionSaveOrUpdate " + i +": "+ openid + " ; old nickname : " + nickname);
-			try {
-				nickname = Base64.encode(nickname.getBytes("UTF-8"));
-			} catch (UnsupportedEncodingException e) {
-				log.info("transactionSaveOrUpdate" + nickname + "转码Base64失败，使用截除方案" );
-				nickname = matchStr(nickname);
-			}
+			nickname = matchStr(nickname);
 			
 			String sex = userTemp.getString("sex");
 			String subscribe_time = DateUtil.getyyyyMMddHHmmss();
@@ -338,18 +253,8 @@ public class WxUserService {
 	
 	public static void main(String[] args) {
 		String str = "中是H★ 要 H★KかS  Micky ߌ»Icey  Storm hߔ®";
-		try {
-			String ss = Base64.encode(str.getBytes("UTF-8"));
-			System.err.println(ss);
-			byte[] ssaa = Base64.decode(ss);
-			System.err.println(new String(ssaa, "UTF-8"));
-			
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
-		/*Pattern pattern = Pattern.compile(pattrn);
+		Pattern pattern = Pattern.compile(pattrn);
 		Matcher matcher = pattern.matcher(str);
 		
 		StringBuffer sbr = new StringBuffer();
@@ -357,10 +262,10 @@ public class WxUserService {
 			sbr.append(matcher.group());
 		}
 		String res = sbr.toString();
-		System.err.println(res);*/
+		System.err.println(res);
 	}
 	
-	private Log log = LogFactory.getLog(WxUserService.class);
+	private Log log = LogFactory.getLog(ProductService.class);
 	// String str = "中是H★ 要 H★KかS  Micky ߌ»Icey  Storm hߔ®"; // 测试字符串
 	private static String pattrn = "[\u4e00-\u9fa5]+|[a-z]+|[A-Z]+| |[0-9]+";
 }

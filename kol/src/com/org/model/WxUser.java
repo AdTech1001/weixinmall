@@ -19,6 +19,7 @@ public class WxUser {
 	private String country;
 	private String province;
 	private String city;
+	private String password;
 
 	/**
 	 * 
@@ -29,7 +30,7 @@ public class WxUser {
 		this.roomId = roomId;
 		JSONObject res = new JSONObject();
 		// 根据roomid寻找room
-		ChatingRoom cr = RoomContainer.getRoomById(roomId);
+		ChatingRoom cr = RoomContainer.getInstance().getRoomById(roomId);
 		if(cr != null) {
 			cr.join(openid);
 			res.put(CommonConstant.RESP_CODE, "10000");
@@ -49,7 +50,7 @@ public class WxUser {
 	public JSONObject exitChatingRoom(){
 		JSONObject res = new JSONObject();
 		// 根据roomid寻找room
-		ChatingRoom cr = RoomContainer.getRoomById(roomId);
+		ChatingRoom cr = RoomContainer.getInstance().getRoomById(roomId);
 		if(cr != null) {
 			if(StringUtils.isNotEmpty(openid)) {
 				cr.exit(openid);
@@ -69,7 +70,7 @@ public class WxUser {
 	public WxUser(String openid){
 		this.openid = openid;
 		// 获取用户信息，并初始化
-		JSONObject localUser = WxUserContainer.getLocalUser(openid);
+		JSONObject localUser = WxUserContainer.getInstance().getLocalUser(openid);
 		if(localUser != null) {
 			this.nickname = localUser.getString("nickname");
 			this.sex = localUser.getString("sex");
@@ -79,6 +80,7 @@ public class WxUser {
 			this.country = localUser.getString("country");
 			this.province = localUser.getString("province");
 			this.city = localUser.getString("city");
+			this.password = localUser.containsKey("password") ? localUser.getString("password") : "";
 		}
 	}
 	
@@ -160,6 +162,14 @@ public class WxUser {
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	
 }

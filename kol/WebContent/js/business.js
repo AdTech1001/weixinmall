@@ -1,3 +1,7 @@
+function todo(){
+	alert("todo");
+}
+
 
 /**
  * 查看发言的所有评论

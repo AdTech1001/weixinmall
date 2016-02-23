@@ -110,7 +110,7 @@ public class WxUserUtil {
 		return userArray;
 	}
 	
-	public static String initUserInfo() {
+	public static String synchUserInfo() {
 		// 1 先获取本微信公众号的所有用户openid
 		JSONArray openidArray = WxUserUtil.getOpenidList();
 		JSONArray userInfoList = WxUserUtil.getUserInfoByOpenidList(openidArray);
@@ -119,11 +119,7 @@ public class WxUserUtil {
 		boolean save = wxService.transactionSaveOrUpdate(userInfoList);
 		if(save) {
 			// 保存到数据库成功后，再同步到内存中
-			JSONArray wxUserList = wxService.queryAll(null);
-			if(wxUserList != null && wxUserList.size() >0) {
-				WxUserContainer.cacheUserInfoArray(wxUserList);
-				return "initUserInfo 信息同步成功";
-			}
+			WxUserContainer.getInstance().init();
 			return "initUserInfo 数据库查询用户信息返回空";
 		}
 		return "initUserInfo 信息同步失败";

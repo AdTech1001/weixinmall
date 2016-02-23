@@ -39,14 +39,10 @@
 
 <body>
 	<div class="container">
-		<div>
-			${wxuser.nickname}
-			<c:if test="${empty wxuser.password }">
-				未设置登录密码，建议您<a href="javascript:void(0);" onclick="showSetPwd();">设置</a>
-			</c:if>
-			<br />
-			<br />
-		</div>
+		${wxuser.nickname}
+		<c:if test="${empty wxuser.password }">
+			未设置登录密码，建议您<a href="javascript:void(0);" onclick="showSetPwd();">设置</a>
+		</c:if>
 		
 		<c:forEach items="${productList }" var="product">
 			<div>
@@ -67,7 +63,7 @@
 <script type="text/javascript" src="/js/business.js"></script>
 <script type="text/javascript">
 function directorder(productid){
-	window.location.href="/order/directBuy.do?productid="+productid;
+	window.location.href="/order/buy.do?productid="+productid;
 }
 </script>
 </html>

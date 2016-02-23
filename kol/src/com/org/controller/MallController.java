@@ -2,21 +2,20 @@ package com.org.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import net.sf.json.JSONObject;
+import net.sf.json.JSONArray;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;
 
+import com.org.caches.ProductContainer;
 import com.org.common.CommonConstant;
 import com.org.interfaces.controller.CommonController;
 import com.org.model.WxUser;
 import com.org.servlet.SmpHttpServlet;
-import com.org.utils.HttpTool;
-import com.org.utils.HttpUtil;
 import com.org.wx.utils.WxUserUtil;
-import com.org.wx.utils.WxUtil;
 
 @Controller
 public class MallController extends SmpHttpServlet implements CommonController{
@@ -26,22 +25,34 @@ public class MallController extends SmpHttpServlet implements CommonController{
 	public MallController(){
 	}
 	
+	/**
+	 * 先授权，得到用户信息后，再进入商城首页
+	 */
 	public void post(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession();
 		log.info(this.getParamMap(request).toString());
-		// {state=123, code=031bc730cca7eb3ab51ba8322130801I}
 		// 用户授权。
 		String code = request.getParameter("code");
-//		String secret = WxUtil.getSecret();
-//		String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx6f9dc2bfd436b651&secret="+secret+"&code="+code+"&grant_type=authorization_code";
-//		HttpTool http = new HttpUtil();
-//		JSONObject res = http.wxHttpsGet(null, url);
-//		log.info(res.toString());
-		// {"access_token":"OezXcEiiBSKSxW0eoylIeG_LpV4TpnX-BxNbAVVAasaRyPm55zyI9CKaVNciQOEw8iu_pEDXCiBKbbSJbzzqarhyfecqXoplnmCl7HsBiWFARy1Ob3MealEkubEDs8KHeRbAr5Awrvr7RR3i5t24GA","expires_in":7200,"refresh_token":"OezXcEiiBSKSxW0eoylIeG_LpV4TpnX-BxNbAVVAasaRyPm55zyI9CKaVNciQOEwUHOmtG9PkoiFUefqTDaX00sVqxhfoyE-jbYDCIjldLBnZvj1QP0gGev-Tw2BWQWTdIOnZ9EQDB0Oi0w2ZlT0lA","openid":"osp6swrNZiWtEuTy-Gj1cBVA1l38","scope":"snsapi_base"}
-		
+		// 获取用户信息
 		String openid = WxUserUtil.oauth(code);
 		WxUser wxUser = new WxUser(openid);
-		request.getSession().setAttribute(CommonConstant.WX_USER_SESSION, wxUser);
+		session.setAttribute(CommonConstant.WX_USER_SESSION, wxUser);
+		
+		// 获取商品列表
+		JSONArray productList = ProductContainer.getInstance().getAll();
+		session.setAttribute("productList", productList);
+		
 		this.forward("/mall/index.jsp", request, response);
+		return;
+	}
+	
+	public void pay(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession();
+		log.info("pay ====> "+this.getParamMap(request).toString());
+		
+		request.setAttribute(CommonConstant.RESP_CODE, "10000");
+		request.setAttribute(CommonConstant.RESP_MSG, "支付成功");
+		this.forward("/manager/result.jsp", request, response);
 		return;
 	}
 	
