@@ -34,22 +34,6 @@
 
 <body>
 	<%@ include file="/common/menu.jsp"%>
-	<div id="banner">
-		<div id="slideBox" class="slideBox">
-			<div class="bd">
-				<ul>
-					<c:set var="bannerArray" value="${fn:split('images/banner-emotion.jpg', ',') }" />
-					<c:forEach var="banner" items="${bannerArray }">
-						<li>
-							<a href="javascript:void(0);">
-								<img src="/${banner}">
-							</a>
-						</li>
-					</c:forEach>
-				</ul>
-			</div>
-		</div>
-	</div>
 	<div class="container">
 		<div class="comwidth">
 			<section class="first left">
@@ -57,6 +41,12 @@
 			</section>
 			<section class="first left">
 				<a href="/wx/initMenu.do">公众号菜单初始化</a>
+			</section>
+			<section class="first left">
+				<a href="/wx/applicationYao.do">申请开通摇一摇</a>
+			</section>
+			<section class="first left">
+				<a href="/wx/applicationYaoResult.do">申请开通摇一摇结果查询</a>
 			</section>
 			<div class="clear">
 			</div>

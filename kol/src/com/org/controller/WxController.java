@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
@@ -24,6 +25,8 @@ import com.org.rute.RuteThreadPool;
 import com.org.servlet.SmpHttpServlet;
 import com.org.util.CT;
 import com.org.utils.DateUtil;
+import com.org.utils.HttpTool;
+import com.org.utils.HttpUtil;
 import com.org.utils.StringUtil;
 import com.org.utils.XmlUtils;
 import com.org.wx.utils.WxUtil;
@@ -113,6 +116,57 @@ public class WxController extends SmpHttpServlet implements CommonController{
 	public void deleteBottomMenu(HttpServletRequest request, HttpServletResponse response) {
 		WxUtil.deleteBottomMenu();
 		//this.forward("/www/html/wxtest.jsp", request, response);
+		return;
+	}
+	
+	/**
+	 * 申请开通摇一摇
+	 * @param request
+	 * @param response
+	 */
+	public void applicationYao(HttpServletRequest request, HttpServletResponse response) {
+		
+		JSONObject param = new JSONObject();
+		param.put("name", "jurimengs");
+		param.put("phone_number", "17749753878");
+		param.put("email", "17749753878@qq.com");
+		param.put("industry_id", "1204"); // 机构组织     其他组织     不需要资质文件 
+		param.put("qualification_cert_urls", new JSONArray()); // 机构组织     其他组织     不需要资质文件 
+		param.put("apply_reason", "test"); // 机构组织     其他组织     不需要资质文件 
+		
+		String url = "https://api.weixin.qq.com/shakearound/account/register?access_token=".concat(WxUtil.getToken());
+		HttpTool http = new HttpUtil();
+		JSONObject res = http.wxHttpsPost(param, url);
+		log.info("申请开通摇一摇：" + res.toString());
+		return;
+	}
+	
+	/**
+	 * 申请开通摇一摇 查询审核状态
+	 * @param request
+	 * @param response
+	 */
+	public void applicationYaoResult(HttpServletRequest request, HttpServletResponse response) {
+		
+		JSONObject param = new JSONObject();
+		param.put("name", "jurimengs");
+		param.put("phone_number", "17749753878");
+		param.put("email", "17749753878@qq.com");
+		param.put("industry_id", "1204"); // 机构组织     其他组织     不需要资质文件 
+		param.put("qualification_cert_urls", new JSONArray()); // 机构组织     其他组织     不需要资质文件 
+		param.put("apply_reason", "test"); // 机构组织     其他组织     不需要资质文件 
+		
+		String url = "https://api.weixin.qq.com/shakearound/account/auditstatus?access_token=".concat(WxUtil.getToken());
+		HttpTool http = new HttpUtil();
+		JSONObject res = http.wxHttpsGet(null, url);
+		res.put("backup", "审核状态。0：审核未通过、1：审核中、2：审核已通过；审核会在三个工作日内完成");
+		log.info("查询审核状态：" + res.toString());
+		// 0：审核未通过、1：审核中、2：审核已通过；审核会在三个工作日内完成
+		try {
+			this.write(res, CommonConstant.UTF8, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return;
 	}
 	

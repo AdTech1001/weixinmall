@@ -213,6 +213,7 @@ public class WxUtil {
 	public static String localSign(String timestamp, String noncestr, String url) {
 		StringBuffer temp = new StringBuffer();
 		String ticket = Memcache.getInstance().getValue(WX_TICKET);
+		log.info("localSign ticket : " + ticket);
 		// jsapi_ticket=sM4AOVdWfPE4DxkXGEs8VMCPGGVi4C3VM0P37wVUCFvkVAy_90u5h9nbSlYy3-Sl-HhTdfl2fzFy1AOcHKP7qg&noncestr=Wm3WZYTPz0wzccnW&timestamp=1414587457&url=http://mp.weixin.qq.com?params=value
 		temp.append("jsapi_ticket=").append(ticket).append("&");
 		temp.append("noncestr=").append(noncestr).append("&");
