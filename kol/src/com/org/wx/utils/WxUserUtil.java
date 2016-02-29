@@ -155,4 +155,7 @@ public class WxUserUtil {
 		return null;
 		
 	}
+	public static void main(String[] args) {
+		
+	}
 }
