@@ -30,6 +30,8 @@ public class RuteAdapter {
 			e = new TypeImage(xmlJson);
 		} else if(msgType.equals("news")) {
 			e = new TypeNews(xmlJson);
+		} else if(msgType.equals("voice")) {
+			e = new TypeVoice(xmlJson);
 		} else {
 			throw new NullPointerException("unknown event type : " + msgType);
 		}
