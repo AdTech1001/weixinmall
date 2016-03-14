@@ -1,0 +1,153 @@
+.message,.modal {
+	background:url(../images/cover.png) repeat;
+	background: rgba(0, 0, 0, 0.65);
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	z-index: 10001;
+	top: 0;
+	left: 0;
+}
+
+.message .modal {
+	background: none;
+	top: inherit;
+	left: inherit;
+}
+
+.message .modal,.modal-box,.message-box {
+	position: relative;
+	overflow: hidden;
+	width:720px;
+	margin-left:270px;
+	margin-top:150px;
+	/* left:50%; */
+	position:relative;
+}
+
+.modal .close:hover {
+	text-decoration: none;
+}
+
+.modal-alert {
+	width: 320px;
+	font-size: 20px;
+	margin: 12% auto 0 auto;
+	background: #fff;
+	border-radius: 2px;
+	padding: 10px;
+	text-align: center;
+}
+
+.modal-title,.modal-header,.message-box h3 {
+	padding:0px 10px;
+	font-size: 18px;
+	line-height: 40px;
+	background: #fff;
+	color: #666;
+	margin: 0;
+}
+
+.modal-content,.modal-body,.message-box .message-content {
+	padding: 0px 20px 10px 20px;
+	background: #fff;
+	border-bottom: 1px solid #ccc;
+	overflow:auto;
+}
+
+.modal-footer,.message-footer {
+	padding: 10px;
+	background: #f3f3f3;
+	border-top: 1px solid #fff;
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	text-align: center;
+}
+
+.modal-alert .modal-content {
+	border: none;
+}
+
+.modal-show {
+	visibility: hidden;
+	position: absolute;
+}
+
+.modal-show+.modal {
+	display: none;
+}
+
+.modal-show:checked+.modal {
+	display: block;
+}
+
+.modal-box.dark,.modal-alert.dark {
+	background: rgba(0, 0, 0, 0.65);
+	color: #fff;
+	border: 1px solid rgba(121, 157, 222, 0.2);
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 1)
+}
+
+.close{
+	right:5px;
+	top:5px;
+	width:24px;
+	height:24px;
+	border-radius:20px;
+	font:bold 18px/18px "Microsoft Yahei";
+	cursor:pointer;
+	border:none;
+	color:#333;
+	text-align:center;
+	padding:0;
+	position:absolute;
+}
+.close:hover{
+	background:#000000;
+}
+/***add style***/
+.pop_up_box{
+	border:3px solid #b9b9b9;
+}
+.pop_title{
+	height:35px;
+	border-bottom:1px solid #e5e5e5;
+	font:normal 20px/35px "Microsoft Yahei";
+	color:#666666;
+	padding-left:10px;
+}
+.close{
+	width:20px;
+	margin:5px 5px 0 0;
+	height:20px;
+	font:normal 20px/20px "Microsoft Yahei";
+	cursor:pointer;
+	border:none;
+	color:#666;
+	padding:0px;
+	background:none;
+}
+.close:hover{
+	background:#c40101;
+	color:#fff;
+	border-radius:20px;
+}
+.maskContent, .commentsTitle, #channelId{
+	width:100%;
+	border: 1px solid #ccc;
+	font-size:14px;
+	color: #666;
+}
+
+#commentsForm {
+	color: #666;
+	font-size:14px;
+}
+
+.commentsTitle, #channelId{
+	height:25px;
+}
+
+.auto-scroll {
+	overflow: auto;
+}

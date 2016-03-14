@@ -6,7 +6,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import com.org.caches.WxUserContainer;
-import com.org.controller.WxConstant;
+import com.org.controller.wx.WxConstant;
 import com.org.interfaces.rute.Business;
 import com.org.wx.utils.MessageUtil;
 import com.org.wx.utils.WxUtil;

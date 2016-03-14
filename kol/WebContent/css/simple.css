@@ -1,0 +1,145 @@
+body{
+	margin: 0;
+	padding:0;
+	border:0;
+	outline:0;
+	vertical-align:baseline;
+	background:transparent;
+	font-family:"Microsoft Yahei",Arial,Helvetica,sans-serif;
+}
+h1 {
+	font-family:"Microsoft Yahei";
+	color: #333;
+}
+.btn-signup {
+	text-align: center; 
+	background-color: #60b044; 
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.15); 
+	background-image: linear-gradient(#8add6d, #60b044);
+}
+.btn {
+	border: 0px ; 
+	border-radius: 5px; 
+	font-size: 16px; 
+	padding: 10px; 
+	margin-top: 10px;
+}
+.btn-a {
+	text-decoration: none; color: #333;
+}
+input[type="text"], input[type="password"] {
+	border: 0px ;width: 92%; border-radius: 5px; font-size: 16px; padding: 10px; margin-top: 10px;
+}
+.form-signup {
+	width: 100%;
+	right: 0px;
+}
+.div-signup {
+	width: 250px;
+	position: relative;
+	padding: 20px;
+	background-color: #f7f7f7;
+	/* opacity:0.5; */
+}
+.div-enter {
+	width: 250px;
+}
+.topDiv {
+	height: 60px;
+}
+.mainDiv {
+	width: 100%;
+	padding-top: 65px;
+	position: relative;
+}
+.mainDiv div {
+	float: left;
+}
+	
+.bg {
+	background-color: #f7f7f7;
+}
+
+.login_bg {
+	background-color: #ccc;
+	height: 450px;
+}
+dd{
+	margin: 0px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.div_nav {
+	height: 70px; 
+	/* background-color: #eee; */
+}
+.div_nav {
+	padding-left: 152px;
+}
+.div_nav ul, li {
+	margin:12px 53px 0 0; padding:0; list-style-type:none; float: left; font-size:18px;
+}
+.div_nav ul, li a{
+	color: #666666; 
+}
+
+.login_li, .li_active a{
+	color: #389cdb;
+}
+.login_li {
+	font-size:14px; cursor: pointer;
+}
+.logo_small{
+	width: 46px; height: 46px; background: url(../images/logo_small.png) no-repeat; margin-top: -12px;
+}
+
+/* main */
+.div_main {
+	height: 485px; background: #d5d5d5 url(../images/cup.png) no-repeat right 0;
+}
+
+.div_enter {
+	height: 485px; background: #008be6;
+}
+.div_enter a {
+	float: right; margin: 190px 130px 0 0;  color: white; color: #ccc; font-size: 30px;
+}
+
+.div_footer {
+	height: 60px; background: #999;
+}
+.div_footer a{
+	float: left; margin: 20px 0 0 152px; color: white; font-size: 14px;
+}
+
+.div_main .div_main_words {
+	float: left; margin: 152px 0 0 152px; 
+}
+.div_main .div_footer_words {
+	float: left; margin: 18px 0 0 152px; 
+}
+
+.td_words_title {
+	font-size: 52px; color: #333333;
+}
+
+.table_main_words {
+	font-size: 16px; color: #5c5d5d;
+}
+.table_main_words tr td {
+	padding: 5px;
+}
+
+.span_words_content_a {
+	color: #ff9600;
+}

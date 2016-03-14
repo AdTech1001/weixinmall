@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.org.dao.CommonDao;
-import com.org.model.ChatingRoom;
+import com.org.model.wx.ChatingRoom;
 import com.org.util.SpringUtil;
 
 /**

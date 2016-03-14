@@ -80,11 +80,15 @@ public class SmpHttpServlet extends HttpServlet {
 		}
 	}
 	
-	protected void write(String noticeData,String charsetName,HttpServletResponse response) throws IOException {
+	protected void write(String noticeData,String charsetName,HttpServletResponse response) {
 		ServletOutputStream out = null;
-		out = response.getOutputStream();
-		out.write(noticeData.getBytes(charsetName));
-		out.flush();
+		try {
+			out = response.getOutputStream();
+			out.write(noticeData.getBytes(charsetName));
+			out.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 //	暂时不知道为什么要try catch
@@ -146,7 +150,6 @@ public class SmpHttpServlet extends HttpServlet {
 	
 	}
 	
-	@SuppressWarnings("unchecked")
 	protected Map<String,String> getParamMap(HttpServletRequest request){
 		Map<String,String> paramMap = new HashMap<String, String>();
 		Enumeration<String> enumeration = request.getParameterNames();

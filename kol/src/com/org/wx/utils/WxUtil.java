@@ -18,7 +18,7 @@ import com.org.caches.Memcache;
 import com.org.common.CommonConstant;
 import com.org.log.LogUtil;
 import com.org.log.impl.LogUtilMg;
-import com.org.model.WxAutoReply;
+import com.org.model.wx.WxAutoReply;
 import com.org.util.CT;
 import com.org.utils.HttpTool;
 import com.org.utils.HttpUtil;

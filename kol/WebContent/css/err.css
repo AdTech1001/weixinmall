@@ -1,0 +1,28 @@
+.error-404 {
+	background-color:#EDEDF0
+}
+.module-error {
+	margin-top:182px
+}
+.module-error .error-main {
+	margin:0 auto;
+	width:420px
+}
+.module-error .label {
+	float:left;
+	width:160px;
+	height:151px;
+	background:url('../icons/error.png') 0 0 no-repeat
+}
+.module-error .info {
+	margin-left:182px;
+	line-height:1.8
+}
+.module-error .title {
+	color:#666;
+	font-size:14px
+}
+.module-error .reason {
+	margin:8px 0 18px 0;
+	color:#666
+}

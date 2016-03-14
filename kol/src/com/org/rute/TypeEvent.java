@@ -6,9 +6,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.org.caches.RoomContainer;
-import com.org.controller.WxConstant;
+import com.org.controller.wx.WxConstant;
 import com.org.interfaces.rute.Business;
-import com.org.model.WxUser;
+import com.org.model.wx.WxUser;
 import com.org.services.WxUserService;
 import com.org.util.SpringUtil;
 import com.org.utils.DateUtil;

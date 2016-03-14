@@ -8,7 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.org.interfaces.caches.Container;
-import com.org.model.ChatingRoom;
+import com.org.model.wx.ChatingRoom;
 import com.org.services.RoomService;
 import com.org.util.SpringUtil;
 
