@@ -1,8 +1,11 @@
 package com.org.wx.utils;
 
+import java.util.List;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -20,30 +23,44 @@ import com.org.utils.PropertyUtil;
  *
  */
 public class MessageUtil {
-	
+	private static HttpTool http = new HttpUtil();
 	private static String url = PropertyUtil.getValue("wx", "wx_send_message_by_service");
 	private static Log log = LogFactory.getLog(MessageUtil.class);
 	protected MessageUtil(){}
 
 	/**
 	 * 发送消息给指定用户
-	 * @param paramContent json体，包含了用户openid、content的
+	 * @param content 最原始的文本
+	 * @param openid 
 	 * @return
 	 */
 	public static JSONObject sendToOne(String content, String openid){
+		// paramContent json体，包含了用户openid、content的
 		JSONObject paramContent = getTextMessageJson(content);
 		paramContent.put("touser", openid);
 
 		// 调用客服接口发送消息 
 		String urlTemp = url.concat(Memcache.getInstance().getValue(CommonConstant.WX_TOKEN_KEY));
-		log.info("pushMessage url====> " + urlTemp);
-		
-		
-		HttpTool http = new HttpUtil();
 		JSONObject returns = http.wxHttpsPost(paramContent, urlTemp);
 		log.info("pushMessage returns====> " + returns);
 
 		return returns;
+	}
+
+	public static void sendToMulti(String content, List<String> openidList){
+		
+		JSONObject paramContent = getTextMessageJson(content);
+		String urlTemp = null;
+		for (int i = 0; i < openidList.size(); i++) {
+			if(StringUtils.isNotEmpty(openidList.get(i))){
+				// 调用客服接口发送消息 
+				urlTemp = url.concat(Memcache.getInstance().getValue(CommonConstant.WX_TOKEN_KEY));
+				paramContent.put("touser", openidList.get(i));
+				
+				JSONObject returns = http.wxHttpsPost(paramContent, urlTemp);
+				log.info("pushMessage returns====> " + returns);
+			}
+		}
 	}
 	
 	/**

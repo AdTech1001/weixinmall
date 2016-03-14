@@ -3,6 +3,7 @@ encoding//WebContent/index.jsp=UTF-8
 encoding//src/com/org=gbk
 encoding//src/com/org/controller/wx/MallController.java=UTF-8
 encoding//src/com/org/controller/wx/OrderController.java=UTF-8
+encoding//src/com/org/controller/wx/TokenController.java=UTF-8
 encoding//src/com/org/controller/wx/WxController.java=UTF-8
 encoding//src/com/org/services/ProductService.java=UTF-8
 encoding//src/com/org/services/RoomService.java=UTF-8

@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.org.caches.RoomContainer;
+import com.org.caches.WxUserContainer;
 import com.org.controller.wx.WxConstant;
 import com.org.interfaces.rute.Business;
 import com.org.model.wx.WxUser;
@@ -39,9 +40,13 @@ public class TypeEvent implements Business<String> {
 			log.info("消息推送开始");
 			JSONObject returns = null;
 			String content = "";
-			WxUser wxUser = new WxUser(FromUserName);
+			WxUser wxUser = WxUserContainer.getInstance().getLocalUser(FromUserName);
+			
 			if(WxUtil.ENTER_CHATING_ROOM.equals(EventKey)) {
 				// 加入聊天室
+				if(wxUser.getRoomId() != null) {
+					wxUser.exitChatingRoom();
+				}
 				wxUser.joininChatingRoom(RoomContainer.DEFAULT_ROOM_ID);
 				// 回复文本消息
 				content = "您已进入聊天室, 可以和大家聊天啦";
@@ -50,6 +55,19 @@ public class TypeEvent implements Business<String> {
 				wxUser.exitChatingRoom();
 				// 回复文本消息
 				content = "您已退出聊天室";
+			} else if(WxUtil.ENTER_STORE_ROOM.equals(EventKey)) {
+				// 进入故事模式
+				if(wxUser.getRoomId() != null) {
+					wxUser.exitChatingRoom();
+				}
+				wxUser.joininChatingRoom(RoomContainer.STORY_ROOM_ID);
+				// 回复文本消息
+				content = "您已进入故事会";
+			} else if(WxUtil.EXIT_STORE_ROOM.equals(EventKey)) {
+				// 退出聊天室
+				wxUser.exitChatingRoom();
+				// 回复文本消息
+				content = "您已退出故事会";
 			}
 			
 			returns = MessageUtil.sendToOne(content, FromUserName);

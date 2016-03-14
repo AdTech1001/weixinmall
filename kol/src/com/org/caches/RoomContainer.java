@@ -17,6 +17,7 @@ import com.org.util.SpringUtil;
  */
 public class RoomContainer implements Container{
 	public static final Integer DEFAULT_ROOM_ID = 0;
+	public static final Integer STORY_ROOM_ID = 1;
 	private Map<Integer, ChatingRoom> roomMap;
 	private static RoomContainer temp;
 	private RoomContainer(){}

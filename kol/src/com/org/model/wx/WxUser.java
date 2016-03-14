@@ -5,7 +5,6 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 
 import com.org.caches.RoomContainer;
-import com.org.caches.WxUserContainer;
 import com.org.common.CommonConstant;
 
 public class WxUser {
@@ -53,6 +52,7 @@ public class WxUser {
 		ChatingRoom cr = RoomContainer.getInstance().getRoomById(roomId);
 		if(cr != null) {
 			if(StringUtils.isNotEmpty(openid)) {
+				this.roomId = null;
 				cr.exit(openid);
 				res.put(CommonConstant.RESP_CODE, "10000");
 				res.put(CommonConstant.RESP_MSG, "退出成功");
@@ -67,8 +67,8 @@ public class WxUser {
 		return res;
 	}
 
-	public WxUser(String openid){
-		this.openid = openid;
+	public WxUser(){
+		/*this.openid = openid;
 		// 获取用户信息，并初始化
 		JSONObject localUser = WxUserContainer.getInstance().getLocalUser(openid);
 		if(localUser != null) {
@@ -81,7 +81,7 @@ public class WxUser {
 			this.province = localUser.getString("province");
 			this.city = localUser.getString("city");
 			this.password = localUser.containsKey("password") ? localUser.getString("password") : "";
-		}
+		}*/
 	}
 	
 	public String getOpenid() {

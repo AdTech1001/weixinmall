@@ -131,10 +131,10 @@ public class CommonDao extends BaseDao {
 	}
 
 	/**
-	 * @param entityClass
+	 * @param entityClass 要反射的对象class
 	 * @param sql
 	 * @param params
-	 *            ?,?,? {1:"...", 2:"...", 3:"..."}
+	 *            没有可填null
 	 * @return
 	 */
 	public <T> List<T> queryList(Class<T> entityClass, String sql, Map<Integer, Object> params) {

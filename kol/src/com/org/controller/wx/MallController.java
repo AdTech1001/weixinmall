@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;
 
 import com.org.caches.ProductContainer;
+import com.org.caches.WxUserContainer;
 import com.org.common.CommonConstant;
 import com.org.interfaces.controller.CommonController;
 import com.org.model.wx.WxUser;
@@ -40,7 +41,7 @@ public class MallController extends SmpHttpServlet implements CommonController{
 		String code = request.getParameter("code");
 		// 获取用户信息
 		String openid = WxUserUtil.oauth(code);
-		WxUser wxUser = new WxUser(openid);
+		WxUser wxUser = WxUserContainer.getInstance().getLocalUser(openid);
 		session.setAttribute(CommonConstant.WX_USER_SESSION, wxUser);
 		
 		// 获取商品列表

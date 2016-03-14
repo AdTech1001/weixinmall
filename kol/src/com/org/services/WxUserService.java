@@ -17,6 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
 import com.org.dao.CommonDao;
+import com.org.model.wx.WxUser;
 import com.org.util.Base64;
 import com.org.util.SpringUtil;
 import com.org.utils.DateUtil;
@@ -64,21 +65,21 @@ public class WxUserService {
 	
 	private static String sql_query_all = "select * from wx_user_info";
 	
-	public JSONObject query(String openid){
+	public WxUser query(String openid){
 		Map<Integer, Object> params = new HashMap<Integer, Object>();
 		params.put(1, openid);
 		CommonDao commonDao = (CommonDao)SpringUtil.getBean("commonDao");
-		JSONObject res = commonDao.querySingle(JSONObject.class, sql_query_by_openid, params);
+		WxUser res = commonDao.querySingle(WxUser.class, sql_query_by_openid, params);
 		// 由于用户名的特殊，在存储到数据库的时候，都是使用的base64转码字符
 		// 所以在取出的时候，要再base64解码
-		String nickname = res.getString("nickname");
+		String nickname = res.getNickname();
 		try {
 			nickname = new String(Base64.decode(nickname), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			log.info("Base64解码失败: " + nickname);
 			e.printStackTrace();
 		}
-		res.put("nickname", nickname);
+		res.setNickname(nickname);
 		return res;
 	}
 	
@@ -87,28 +88,31 @@ public class WxUserService {
 	 * @param subscribe 是否关注 0:未关注  1 已关注 ; 如果参数为null, 则表示查询所有
 	 * @return
 	 */
-	public JSONArray queryAll(String subscribe){
+	public List<WxUser> queryAll(String subscribe){
 		CommonDao commonDao = (CommonDao)SpringUtil.getBean("commonDao");
-		JSONArray res = new JSONArray();
+		//JSONArray res = new JSONArray();
+		List<WxUser> res = null;
 		if(StringUtils.isEmpty(subscribe)) {
-			res = commonDao.queryJSONArray(sql_query_all);
+			//res = commonDao.queryJSONArray(sql_query_all);.
+			res = commonDao.queryList(WxUser.class, sql_query_all, null);
 		} else {
 			Map<Integer, Object> params = new HashMap<Integer, Object>();
 			params.put(1, subscribe);
-			res = commonDao.queryJSONArray(sql_query_by_subscribe, params);
+			//res = commonDao.queryJSONArray(sql_query_by_subscribe, params);
+			res = commonDao.queryList(WxUser.class, sql_query_by_subscribe, params);
 		}
 		
-		JSONObject temp = null;
+		WxUser temp = null;
 		for (int i = 0; i < res.size(); i++) {
-			temp = res.getJSONObject(i);
-			String nickname = temp.getString("nickname");
+			temp = res.get(i);
+			String nickname = temp.getNickname();
 			try {
 				nickname = new String(Base64.decode(nickname), "UTF-8");
 			} catch (UnsupportedEncodingException e) {
 				log.info("queryAll Base64解码失败: " + nickname);
 				e.printStackTrace();
 			}
-			temp.put("nickname", nickname);
+			temp.setNickname(nickname);
 		}
 		return res;
 	}
@@ -118,7 +122,7 @@ public class WxUserService {
 	 * @param userInfoFromWx 调用微信接口查询得到的用户信息
 	 * @return
 	 */
-	public JSONObject saveAndReturn(JSONObject userInfoFromWx){
+	public WxUser saveAndReturn(JSONObject userInfoFromWx){
 
 		String openid = userInfoFromWx.getString("openid");
 		String nickname = userInfoFromWx.getString("nickname");
@@ -140,7 +144,7 @@ public class WxUserService {
 		String city = userInfoFromWx.getString("city");
 		boolean saveRes = save(openid, nickname, sex, subscribe_time, subscribe, headimgurl, country, province, city);
 		
-		JSONObject result = null;
+		WxUser result = null;
 		if(saveRes) {
 			result = query(openid);
 		}

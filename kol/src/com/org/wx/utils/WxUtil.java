@@ -30,8 +30,16 @@ public class WxUtil {
 	private static Timer timer = new Timer();
 	private static HttpTool http = new HttpUtil();
 	
+	/**
+	 * 聊天模式
+	 */
 	public static final String ENTER_CHATING_ROOM = "enterChatingroom";
 	public static final String EXIT_CHATING_ROOM = "exitChatingroom";
+	/**
+	 * 故事模式
+	 */
+	public static final String ENTER_STORE_ROOM = "enterStoryRoom";
+	public static final String EXIT_STORE_ROOM = "enterStoryRoom";
 	
 	private static final String WX_TICKET = "wxTicket"; // 微信端的ticket
 	private static final String ACCESS_TOKEN_KEY = "access_token";

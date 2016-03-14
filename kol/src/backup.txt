@@ -1,3 +1,7 @@
 alter table wx_user_info type=InnoDB
 
 #修改表存储引擎以支持事务
+
+影响消息发送的因素：
+1 代码层面的token是否失效
+2 网络层面的流量是否超过空间服务商提供的标准

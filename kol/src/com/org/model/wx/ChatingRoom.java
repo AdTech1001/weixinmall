@@ -9,7 +9,9 @@ public class ChatingRoom {
 	private String roomname;
 	// 房间主题 
 	private String roomtitle;
-	
+	/**
+	 * 用户openid集合
+	 */
 	private List<String> userList = new ArrayList<String>();
 	
 	//private Map<String, List<String>> roomMap = new HashMap<String, List<String>>(); 
@@ -35,6 +37,10 @@ public class ChatingRoom {
 		if(!userList.contains(openid)) {
 			userList.remove(openid);
 		}
+	}
+	
+	public List<String> getAllOpenid(){
+		return userList;
 	}
 
 	public Integer getRoomid() {

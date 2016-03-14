@@ -1,6 +1,7 @@
 package com.org.caches;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONArray;
@@ -10,18 +11,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.org.interfaces.caches.Container;
+import com.org.model.wx.WxUser;
 import com.org.services.WxUserService;
 import com.org.util.SpringUtil;
 import com.org.wx.utils.WxUserUtil;
 
 /**
  * 用户信息容器。用于缓存用户信息
- * 存放两组值，一组是用户信息数组JSONArray，另一组是key(String) - value(JSONObject)形式的，便于代码处理
  * @author Administrator
  *
  */
 public class WxUserContainer implements Container{
-	private static Map<String, JSONObject> wxUserInfoMap;
+	private static Map<String, WxUser> wxUserInfoMap;
 	private static WxUserContainer temp;
 	private WxUserContainer(){}
 
@@ -34,16 +35,16 @@ public class WxUserContainer implements Container{
 	 * 初始化用户缓存信息
 	 */
 	public void init(){
-		wxUserInfoMap = new HashMap<String, JSONObject>();
+		wxUserInfoMap = new HashMap<String, WxUser>();
 		WxUserService wxService = (WxUserService)SpringUtil.getBean("wxUserService");
-		JSONArray array = wxService.queryAll(null);
+		List<WxUser> array = wxService.queryAll(null);
 		
-		JSONObject temp = null;
+		WxUser temp = null;
 		String key = null;
 		if(array != null) {
 			for (int i = 0; i < array.size(); i++) {
-				temp = array.getJSONObject(i);
-				key = temp.getString("openid");
+				temp = array.get(i);
+				key = temp.getOpenid();
 				wxUserInfoMap.put(key, temp);
 			}
 			log.info("已初始化用户信息"+ array.size() +"条");
@@ -57,21 +58,23 @@ public class WxUserContainer implements Container{
 	 * @param openid
 	 * @return
 	 */
-	public JSONObject getLocalUser(String openid){
+	public WxUser getLocalUser(String openid){
+		WxUser wxUser = null;
 		if(wxUserInfoMap.containsKey(openid)) {
-			return wxUserInfoMap.get(openid);
+			wxUser = wxUserInfoMap.get(openid);
+		} else {
+			log.info("getLocalUser 缓存无信息，执行微信查询");
+			// 根据openid去微信查询用户信息
+			JSONObject res = WxUserUtil.getUserBaseInfo(openid);
+			// 
+			WxUserService wxService = (WxUserService)SpringUtil.getBean("wxUserService");
+			// 保存，并返回数据库保存的用户信息
+			log.info("getLocalUser 微信查询返回信息保存到本地");
+			wxUser = wxService.saveAndReturn(res);
+			wxUserInfoMap.put(openid, wxUser);
 		}
 
-		log.info("getLocalUser 缓存无信息，执行微信查询");
-		// 根据openid去微信查询用户信息
-		JSONObject res = WxUserUtil.getUserBaseInfo(openid);
-		// 
-		WxUserService wxService = (WxUserService)SpringUtil.getBean("wxUserService");
-		// 保存，并返回数据库保存的用户信息
-		log.info("getLocalUser 微信查询返回信息保存到本地");
-		JSONObject dbUserInfo = wxService.saveAndReturn(res);
-		wxUserInfoMap.put(openid, dbUserInfo);
-		return dbUserInfo;
+		return wxUser;
 	}
 	
 	/**
@@ -93,9 +96,9 @@ public class WxUserContainer implements Container{
 	 * 缓存单个用户信息
 	 * @param args
 	 */
-	public void cacheUserInfo(JSONObject temp){
+	public void cacheUserInfo(WxUser temp){
 		if(temp != null) {
-			String keytemp = temp.getString("openid");
+			String keytemp = temp.getOpenid();
 			wxUserInfoMap.put(keytemp, temp);
 		}
 	}
