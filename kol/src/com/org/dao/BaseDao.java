@@ -58,9 +58,9 @@ public class BaseDao {
 		return null;
 	}
 	
-	protected <T> List<T> queryListByT(String sql, Map<Integer, Object> params, T entity)
+	protected <T> List<T> queryListByT(String sql, Map<Integer, Object> params, Class<T> entityClass)
 			throws SQLException, IllegalArgumentException, IllegalAccessException,
-			InvocationTargetException {
+			InvocationTargetException, InstantiationException {
 		
 		java.sql.Connection connection = null;
 		List<T> list = new ArrayList<T>();
@@ -79,8 +79,10 @@ public class BaseDao {
 			//
 			ReflectDbModel model = new ReflectDbModel();
 			Method m = null;
+			T entity = null;
 			while (rs.next()) {
-				// 这个地方相当于每用一次就new一次,否则数据会覆盖上一次的数据
+				// 一个指针对应一个entity
+				entity = entityClass.newInstance();
 				for (int i = 1; i <= columnCounts; i++) {
 					initReflectDbModel(rs, model, i);
 					if (model.getValue() != null && model.getValue() != "") {
@@ -229,7 +231,7 @@ public class BaseDao {
 		ResultSetMetaData rsmd = rs.getMetaData();
 		String key = rsmd.getColumnName(index);
 		// 转实例名
-		key = StringUtil.toEntityName(rsmd.getColumnName(index), false);
+		key = StringUtil.toEntityName(rsmd.getColumnName(index), true);
 		
 		String paramType = rsmd.getColumnClassName(index);
 		Object value = rs.getObject(index);

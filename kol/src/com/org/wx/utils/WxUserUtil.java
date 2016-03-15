@@ -17,7 +17,6 @@ import com.org.utils.PropertyUtil;
 
 public class WxUserUtil {
 	private static Log log = LogFactory.getLog(WxUserUtil.class);
-	private static HttpTool http = new HttpUtil();
 	
 	public static final String ENTER_CHATING_ROOM = "enterChatingroom";
 	public static final String EXIT_CHATING_ROOM = "exitChatingroom";
@@ -33,6 +32,7 @@ public class WxUserUtil {
 	public static JSONArray getOpenidList() {
 		String token = Memcache.getInstance().getValue(CommonConstant.WX_TOKEN_KEY);
 		String url = PropertyUtil.getValue("wx", "wx_get_userid_list").concat(token);
+		HttpTool http = new HttpUtil();
 		JSONObject resultJson = http.wxHttpsGet(null, url);
 		// 第一次查询请求得到的数组
 		JSONArray openidArray = resultJson.getJSONObject("data").getJSONArray("openid");
@@ -72,6 +72,7 @@ public class WxUserUtil {
 	public static JSONArray getUserInfoByOpenidList(JSONArray openidArray) {
 		String token = Memcache.getInstance().getValue(CommonConstant.WX_TOKEN_KEY);
 		String url = WX_GET_BATCH_USER_INFO.concat(token);
+		HttpTool http = new HttpUtil();
 		
 		JSONArray paramArray = new JSONArray();
 		JSONObject singleTemp = new JSONObject();
@@ -131,6 +132,7 @@ public class WxUserUtil {
 		
 		JSONObject requestJson = new JSONObject();
 		log.info("getUserBaseInfo：请求参数" + requestJson.toString());
+		HttpTool http = new HttpUtil();
 		JSONObject result = http.wxHttpsPost(requestJson, remoteUrl);
 		log.info("getUserBaseInfo：响应参数" + result.toString());
 		return result;

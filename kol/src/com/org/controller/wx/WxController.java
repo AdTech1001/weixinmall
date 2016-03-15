@@ -70,6 +70,24 @@ public class WxController extends SmpHttpServlet implements CommonController{
 		return;
 	}
 	
+	/**
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	public void rutetest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		JSONObject xmlJson = new JSONObject();
+		// TODO TEst
+		xmlJson.put("FromUserName", "osp6swrNZiWtEuTy-Gj1cBVA1l38");
+		xmlJson.put("Content", "哈哈哈");
+		xmlJson.put("MsgType", "text");
+		log.info("收到微信服务器的消息：xmlJson=====> " + xmlJson);
+		
+		String result = dealBusiness(xmlJson);
+		this.write(result, CommonConstant.UTF8, response);
+		return;
+	}
+	
 	private String dealBusiness(JSONObject xmlJson){
 		Business<String> event = RuteAdapter.adapter(xmlJson);
 		String dateStr = DateUtil.getyyyyMMddHHmmss();

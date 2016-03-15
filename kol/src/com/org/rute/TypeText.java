@@ -31,6 +31,9 @@ public class TypeText implements Business<String> {
 		String msgFromOpenid = xmlJson.getString("FromUserName");
 		WxUser wxUser = WxUserContainer.getInstance().getLocalUser(msgFromOpenid);
 		
+		// TODO test
+		wxUser.setRoomId(0);
+		
 		String returnStr = "";
 		Integer roomid = wxUser.getRoomId();
 		if(wxUser.getRoomId() != null) {
@@ -42,34 +45,19 @@ public class TypeText implements Business<String> {
 				String content = nick + ":\n" + xmlJson.getString("Content");
 				
 				List<String> openidList = cr.getAllOpenid();
+				
+				// TODO test
+				openidList.add("osp6swrNZiWtEuTy-Gj1cBVA1l38");
+				openidList.add("osp6swrNZiWtEuTy-Gj1cBVA1l38");
+				openidList.add("osp6swrNZiWtEuTy-Gj1cBVA1l38");
+				
 				MessageUtil.sendToMulti(content, openidList);
 			}
 		} else {
 			returnStr = WxUtil.autoReply(xmlJson);
 		}
-//		// 消息要反馈的对象列表
-//		JSONArray chatingUserArray = WxUserContainer.getChatingUser();
-//		// 发消息者的昵称
-//		Map<String, Boolean> chatingUsersMap = WxUserContainer.getChatingOpenidsMap();
-//		// 判断下是否在聊天室
-//		String returnStr = "";
-//		if(chatingUsersMap.containsKey(msgFromOpenid) && chatingUsersMap.get(msgFromOpenid)) {
-//			returnStr = WxConstant.RETURN_SUCCESS;
-//			// 从组中除去发信息者自己
-//			//chatingUserArray.remove(msgFromOpenid);
-//			// 发消息者的昵称
-//			String nick = WxUserContainer.getUserBaseInfoFromLocal(msgFromOpenid).getString("nickname") ;
-//			String content = nick + ":\n" + xmlJson.getString("Content");
-//			JSONObject paramContent = MessageUtil.getTextMessageJson(content);
-//			// 这里应该奖消息发送放到线程池中处理
-//			MessageUtil.pushMassMessage(chatingUserArray, paramContent, 0);
-//		} else {
-//			returnStr = WxUtil.autoReply(xmlJson);
-//		}
-//		return returnStr;
 
-		// TODO 
-		return "";
+		return returnStr;
 	}
 
 	public JSONObject getXmlJson() {

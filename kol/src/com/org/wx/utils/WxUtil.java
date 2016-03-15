@@ -28,7 +28,6 @@ import com.org.utils.SHA1Util;
 public class WxUtil {
 	private static Log log = LogFactory.getLog(WxUtil.class);
 	private static Timer timer = new Timer();
-	private static HttpTool http = new HttpUtil();
 	
 	/**
 	 * 聊天模式
@@ -73,6 +72,7 @@ public class WxUtil {
 		requestJson.put("grant_type", GRANT_TYPE); // 微信接口
 		requestJson.put("appid", APPID);
 		requestJson.put("secret", SECRET);
+		HttpTool http = new HttpUtil();
 		JSONObject responseJson = http.httpPost(requestJson, TOKEN_URL, CT.ENCODE_UTF8);
 
 		// 存放到memcache
@@ -92,7 +92,7 @@ public class WxUtil {
 
 		requestJson.put(ACCESS_TOKEN_KEY, token); // 微信接口
 		requestJson.put("type", TICKET_TYPE);
-
+		HttpTool http = new HttpUtil();
 		JSONObject responseJson = http.httpPost(requestJson, TICKET_URL, CT.ENCODE_UTF8);
 
 		if (0 == responseJson.getInt("errcode")) {
@@ -236,6 +236,7 @@ public class WxUtil {
 		// 先删除：
 		StringBuffer deleteUrl = new StringBuffer(PropertyUtil.getValue("wx", "wx_delete_bottommenu_url"));
 		deleteUrl.append(token);
+		HttpTool http = new HttpUtil();
 		String res = http.httpGet(deleteUrl.toString(), CT.ENCODE_UTF8);
 		System.out.println("=====delete> "+res);
 	}
@@ -274,7 +275,7 @@ public class WxUtil {
 		
 		StringBuffer createUrl = new StringBuffer(PropertyUtil.getValue("wx", "wx_create_bottommenu_url"));
 		createUrl.append(token);
-
+		HttpTool http = new HttpUtil();
 		JSONObject responseJson = http.wxHttpsPost(menuJson, createUrl.toString());
 
 		if (0 == responseJson.getInt("errcode")) {

@@ -11,6 +11,8 @@ import org.apache.commons.logging.LogFactory;
 
 import com.org.caches.Memcache;
 import com.org.common.CommonConstant;
+import com.org.queues.MessageSendTask;
+import com.org.queues.QueueContainer;
 import com.org.utils.HttpTool;
 import com.org.utils.HttpUtil;
 import com.org.utils.PropertyUtil;
@@ -23,7 +25,6 @@ import com.org.utils.PropertyUtil;
  *
  */
 public class MessageUtil {
-	private static HttpTool http = new HttpUtil();
 	private static String url = PropertyUtil.getValue("wx", "wx_send_message_by_service");
 	private static Log log = LogFactory.getLog(MessageUtil.class);
 	protected MessageUtil(){}
@@ -41,40 +42,6 @@ public class MessageUtil {
 
 		// 调用客服接口发送消息 
 		String urlTemp = url.concat(Memcache.getInstance().getValue(CommonConstant.WX_TOKEN_KEY));
-		JSONObject returns = http.wxHttpsPost(paramContent, urlTemp);
-		log.info("pushMessage returns====> " + returns);
-
-		return returns;
-	}
-
-	public static void sendToMulti(String content, List<String> openidList){
-		
-		JSONObject paramContent = getTextMessageJson(content);
-		String urlTemp = null;
-		for (int i = 0; i < openidList.size(); i++) {
-			if(StringUtils.isNotEmpty(openidList.get(i))){
-				// 调用客服接口发送消息 
-				urlTemp = url.concat(Memcache.getInstance().getValue(CommonConstant.WX_TOKEN_KEY));
-				paramContent.put("touser", openidList.get(i));
-				
-				JSONObject returns = http.wxHttpsPost(paramContent, urlTemp);
-				log.info("pushMessage returns====> " + returns);
-			}
-		}
-	}
-	
-	/**
-	 * 发送消息.为批量发送做的
-	 * @param paramContent json体，包含了用户openid、content的
-	 * @return
-	 */
-	public static JSONObject pushMessage(JSONObject paramContent){
-
-		// 调用客服接口发送消息 
-		String urlTemp = url.concat(Memcache.getInstance().getValue(CommonConstant.WX_TOKEN_KEY));
-		log.info("pushMessage url====> " + urlTemp);
-		
-		
 		HttpTool http = new HttpUtil();
 		JSONObject returns = http.wxHttpsPost(paramContent, urlTemp);
 		log.info("pushMessage returns====> " + returns);
@@ -82,33 +49,13 @@ public class MessageUtil {
 		return returns;
 	}
 
-	/**
-	 * 递归发送消息给用户列表中的用户
-	 * @param openidList
-	 * @param content
-	 * @param nextOpenid
-	 * @return
-	 */
-	public static void pushMassMessage(JSONArray openidList, JSONObject paramContent, int nextOpenid){
-		if(nextOpenid >= openidList.size()) {
-			log.info("递归完成");
-			return ;
+	public static void sendToMulti(String content, List<String> openidList){
+		JSONObject paramContent = getTextMessageJson(content);
+		for (int i = 0; i < openidList.size(); i++) {
+			if(StringUtils.isNotEmpty(openidList.get(i))){
+				QueueContainer.addTask(new MessageSendTask(paramContent, openidList.get(i)));
+			}
 		}
-		
-		String toOpenid = openidList.getString(nextOpenid);
-		paramContent.put("touser", toOpenid);
-		
-		// 调用客服接口发送消息 
-		JSONObject pushResult = pushMessage(paramContent);
-		if(pushResult.getString("errcode").equals("0")) {
-			// 推送成功
-			log.info("客服接口消息发送成功，用户id：" + toOpenid);
-		}
-		// 下一个openid的索引
-		nextOpenid ++;
-		// 递归发送
-		pushMassMessage(openidList, paramContent, nextOpenid);
-
 	}
 	
 	/**

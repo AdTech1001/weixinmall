@@ -34,10 +34,10 @@ public class TypeEvent implements Business<String> {
 	public String call() throws Exception {
 		String FromUserName = xmlJson.getString("FromUserName");
 		String Event = xmlJson.getString("Event");
-		String EventKey = xmlJson.getString("EventKey"); // 对应自定义的key 值
 		// 拿事件类型 和 点击的按钮key值判断 可以决定业务类型
 		if(Event.equals("CLICK")) {
-			log.info("消息推送开始");
+			log.info("CLICK 事件处理");
+			String EventKey = xmlJson.getString("EventKey"); // 对应自定义的key 值
 			JSONObject returns = null;
 			String content = "";
 			WxUser wxUser = WxUserContainer.getInstance().getLocalUser(FromUserName);
@@ -88,7 +88,23 @@ public class TypeEvent implements Business<String> {
 			
 			WxUserService uService = (WxUserService)SpringUtil.getBean("wxUserService");
 			uService.saveOrUpdate(FromUserName, nickname, sex, subscribe_time, subscribe, headimgurl, country, province, city);
-
+		} else if(Event.equals("LOCATION")) {
+			// {"ToUserName":"gh_b4c1774a1ef7","FromUserName":"osp6swrNZiWtEuTy-Gj1cBVA1l38","CreateTime":"1458029241","MsgType":"event","Event":"LOCATION","Latitude":"31.166275","Longitude":"121.389099","Precision":"30.000000"}
+			// 经度
+			String Latitude = xmlJson.getString("Latitude");
+			// 纬度
+			String Longitude = xmlJson.getString("Longitude");
+			// 精度 基本没用
+			//String Precision = xmlJson.getString("Precision");
+			
+			StringBuffer temp = new StringBuffer();
+			temp.append("您的当前位置:\n");
+			temp.append("经度:").append(Latitude);
+			temp.append("纬度:").append(Longitude);
+			JSONObject returns = MessageUtil.sendToOne(temp.toString(), FromUserName);
+			if(returns != null && (returns.getInt("errcode")==0)) {
+				log.info("消息推送成功");
+			}
 		}
 		// 
 		return WxConstant.RETURN_SUCCESS;

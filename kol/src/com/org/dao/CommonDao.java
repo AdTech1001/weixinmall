@@ -138,10 +138,8 @@ public class CommonDao extends BaseDao {
 	 * @return
 	 */
 	public <T> List<T> queryList(Class<T> entityClass, String sql, Map<Integer, Object> params) {
-		T entity = null;
 		try {
-			entity = entityClass.newInstance();
-			return queryListByT(sql, params, entity);
+			return queryListByT(sql, params, entityClass);
 		} catch (InstantiationException e1) {
 			e1.printStackTrace();
 		} catch (IllegalAccessException e1) {

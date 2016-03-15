@@ -106,13 +106,17 @@ public class WxUserService {
 		for (int i = 0; i < res.size(); i++) {
 			temp = res.get(i);
 			String nickname = temp.getNickname();
-			try {
-				nickname = new String(Base64.decode(nickname), "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				log.info("queryAll Base64解码失败: " + nickname);
-				e.printStackTrace();
+			if(StringUtils.isNotEmpty(nickname)) {
+				try {
+					nickname = new String(Base64.decode(nickname), "UTF-8");
+				} catch (UnsupportedEncodingException e) {
+					log.info("queryAll Base64解码失败: " + nickname);
+					e.printStackTrace();
+				}
+				temp.setNickname(nickname);
+			} else {
+				log.info("queryAll nickname 为空: " + temp.getOpenid());
 			}
-			temp.setNickname(nickname);
 		}
 		return res;
 	}

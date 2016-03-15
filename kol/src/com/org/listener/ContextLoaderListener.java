@@ -10,6 +10,7 @@ import org.springframework.web.context.ContextLoader;
 
 import com.org.caches.CacheManager;
 import com.org.container.CommonContainer;
+import com.org.queues.QueueExecutor;
 import com.org.utils.PropertyUtil;
 import com.org.wx.utils.WxUtil;
 
@@ -78,6 +79,8 @@ public class ContextLoaderListener implements ServletContextListener{
 	    // 初始化缓存信息
 	    CacheManager.getInstance().initAllContainer();
 	    
+	    // 启动队列消化线程
+	    QueueExecutor.start();
 		/*12. init guice with mybatis */
 		/*log.info("Integrate Smp With Guice Container Begin....");
 		sc.initGuice(GuiceHelper.createInjector(new SmpMyBatisModule(CT.SMP_GUICE_DSTYPE_C3P0,CT.SMP_GUICE_MYBATIS_EID)));
