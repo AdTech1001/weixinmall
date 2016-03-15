@@ -99,8 +99,9 @@ public class TypeEvent implements Business<String> {
 			
 			StringBuffer temp = new StringBuffer();
 			temp.append("您的当前位置:\n");
-			temp.append("经度:").append(Latitude);
-			temp.append("纬度:").append(Longitude);
+			temp.append("纬度:").append(Latitude);
+			temp.append("\n");
+			temp.append("经度:").append(Longitude);
 			JSONObject returns = MessageUtil.sendToOne(temp.toString(), FromUserName);
 			if(returns != null && (returns.getInt("errcode")==0)) {
 				log.info("消息推送成功");

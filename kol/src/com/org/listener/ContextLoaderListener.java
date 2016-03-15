@@ -39,7 +39,7 @@ public class ContextLoaderListener implements ServletContextListener{
 	}
 
 	public void contextInitialized(ServletContextEvent arg0) {
-		log.info("Integrate Smp With Spring Container Begin....");
+		log.info("Integrate¡¡With Spring Container Begin....");
 		
 		ServletContext servletContext =	arg0.getServletContext();
 	    PropertyUtil.initProperties(servletContext);
@@ -60,7 +60,7 @@ public class ContextLoaderListener implements ServletContextListener{
 //	    IServerSocket serverSocket = (IServerSocket)sc.getBean(CT.SPRING_BEANNAME_JNIOSERVERSOCKET);//SPRING_BEANNAME_JNIOSERVERSOCKET,SPRING_BEANNAME_SERVERSOCKET
 //	    serverSocket.start();
 		
-		log.info("Integrate Smp With Spring Container End....");
+		log.info("Integrate With Spring Container End....");
 		
 		/*11. start kestrel message */
 		//KestrelSub.getInstance().start();
