@@ -30,10 +30,6 @@ public class TypeText implements Business<String> {
 		// 发消息的人
 		String msgFromOpenid = xmlJson.getString("FromUserName");
 		WxUser wxUser = WxUserContainer.getInstance().getLocalUser(msgFromOpenid);
-		
-		// TODO test
-		wxUser.setRoomId(0);
-		
 		String returnStr = "";
 		Integer roomid = wxUser.getRoomId();
 		if(wxUser.getRoomId() != null) {
@@ -45,11 +41,6 @@ public class TypeText implements Business<String> {
 				String content = nick + ":\n" + xmlJson.getString("Content");
 				
 				List<String> openidList = cr.getAllOpenid();
-				
-				// TODO test
-				openidList.add("osp6swrNZiWtEuTy-Gj1cBVA1l38");
-				openidList.add("osp6swrNZiWtEuTy-Gj1cBVA1l38");
-				openidList.add("osp6swrNZiWtEuTy-Gj1cBVA1l38");
 				
 				MessageUtil.sendToMulti(content, openidList);
 			}
