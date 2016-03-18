@@ -22,14 +22,6 @@ public class RoomService {
 	
 	private static String sql_query_all = "select * from wx_room";
 
-/*	public JSONObject query(String roomId){
-		Map<Integer, Object> params = new HashMap<Integer, Object>();
-		params.put(1, roomId);
-		CommonDao commonDao = (CommonDao)SpringUtil.getBean("commonDao");
-		JSONObject res = commonDao.querySingle(JSONObject.class, sql_query_by_id, params);
-		return res;
-	}*/
-	
 	public ChatingRoom query(Integer roomId){
 		Map<Integer, Object> params = new HashMap<Integer, Object>();
 		params.put(1, roomId);

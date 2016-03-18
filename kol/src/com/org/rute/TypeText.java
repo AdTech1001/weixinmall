@@ -1,15 +1,15 @@
 package com.org.rute;
 
-import java.util.List;
-
 import net.sf.json.JSONObject;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.org.caches.RoomContainer;
 import com.org.caches.WxUserContainer;
+import com.org.interfaces.room.Room;
 import com.org.interfaces.rute.Business;
-import com.org.model.wx.ChatingRoom;
 import com.org.model.wx.WxUser;
-import com.org.wx.utils.MessageUtil;
 import com.org.wx.utils.WxUtil;
 
 /**
@@ -18,7 +18,7 @@ import com.org.wx.utils.WxUtil;
  *
  */
 public class TypeText implements Business<String> {
-	//private Log log = LogFactory.getLog(TypeText.class);
+	private Log log = LogFactory.getLog(TypeText.class);
 	private JSONObject xmlJson;
 
 	public TypeText(JSONObject xmlJson) {
@@ -32,17 +32,14 @@ public class TypeText implements Business<String> {
 		WxUser wxUser = WxUserContainer.getInstance().getLocalUser(msgFromOpenid);
 		String returnStr = "";
 		Integer roomid = wxUser.getRoomId();
-		if(wxUser.getRoomId() != null) {
+		if(roomid != null) {
 			// 如果在聊天室中
-			ChatingRoom cr = RoomContainer.getInstance().getRoomById(roomid);
+			Room cr = RoomContainer.getInstance().getRoomById(roomid);
 			if(cr != null) {
-				// 这应该丟给一个队列处理
-				String nick = wxUser.getNickname();
-				String content = nick + ":\n" + xmlJson.getString("Content");
-				
-				List<String> openidList = cr.getAllOpenid();
-				
-				MessageUtil.sendToMulti(content, openidList);
+				// 发送的操作，应该是由房间完成
+				cr.sendToAll(wxUser, xmlJson.getString("Content"));
+			} else {
+				log.info("房间不存在: " + roomid);
 			}
 		} else {
 			returnStr = WxUtil.autoReply(xmlJson);

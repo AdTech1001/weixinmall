@@ -33,62 +33,14 @@
 <!--修复IE6下PNG图片背景透明-->
 <style type="text/css">
 a {text-decoration: none; }
-
-.addCommemorate {
-	display: none; margin-left: -5px; margin-top: 5px; position: absolute; background: url(/images/addcommemorate.gif) no-repeat; width: 70px; height: 70px; text-align:center; padding-top:23px; cursor: pointer; font:normal 16px "Microsoft Yahei"; color:#fff;
-}
-#movmenu {
-	display: none;
-}
-#movmenu div{
-	width: 100%; font: normal 14px/24px solid; display: transparent;
-}
-.switchDivBtn {
-}
-
-#menudiv {
-	display: none; background-color: #2e3138; color: #ccc; position:absolute; z-index: 103;
-}
-
-#menudiv div span{
-	padding-left: 24px;
-	width: 100%;
-}
-
-.topnav {
-	color: #2e3136;
-}
-.topnav div span{
-	padding-left: 15px;
-}
-/* 菜单的响应式 CSS*/
-@media screen and (max-width: 600px) {
-	#pcmenu { display: none; }
-	#movmenu { display: block; }
-}
 </style>
 
 </head>
 
 <body>
-	<div id="nav" class="div_nav">
-		<!-- 边距152px -->
-		 
-		<ul>
-			<li ><div class="logo_small"></div></li>
-			<li class="li_active"><a href="/index.jsp">首页</a></li>
-			<li>
-				<a href="javascript:void(0);" onmouseover="showAddCommemorate();" onclick="turnTo('/channel/commemorateBoard.do');">纪念板</a>
-				<div id="addCommemorate" onclick="addCommemorate();" onmouseout="hideAddCommemorate();" class="addCommemorate">我要纪念</div>
-			</li>
-			<li><a href="javascript:void(0);" onclick="openTestimonials();">先吐为快</a></li>
-			<li>猜猜我是谁</li>
-			<li><a href="javascript:void(0);" onclick="turnToIndex();">看看别人说</a></li>
-			<li>加入我们</li>
-			<li class="login_li" onclick='formTo("channelForm", "/user/toLogin.do");'>登录网页版 >></li>
-		</ul>
-	</div>
 	<div id="maindiv" class="div_main">
+		<%@ include file="/common/menu-new.jsp"%>
+		<div class="top_fix">&nbsp;</div>
 		<div class="div_main_words">
 			<table class="table_main_words" cellpadding="3" cellspacing="0">
 				<tr><td colspan="2" class="td_words_title">人生百科 - 我们的网上家园</td></tr>

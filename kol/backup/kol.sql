@@ -206,5 +206,55 @@ CREATE TABLE `wx_product_info` (
    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+-- ----------------------------
+-- Table structure for `wx_story_role` story角色名
+-- ----------------------------
+DROP TABLE IF EXISTS `wx_story_role`;
+CREATE TABLE `wx_story_role` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `rolename` varchar(50) NOT NULL,
+  `comments` varchar(100),
+   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for `wx_story_node` 剧情章节
+-- ----------------------------
+DROP TABLE IF EXISTS `wx_story_node`;
+CREATE TABLE `wx_story_node` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `storyid` bigint(20) NOT NULL,
+  `nodename` varchar(100) NOT NULL,
+  `nodecontent` varchar(1000) NOT NULL,
+  `comments` varchar(100),
+   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for `wx_story_template` 剧情模板
+-- ----------------------------
+DROP TABLE IF EXISTS `wx_story_template`;
+CREATE TABLE `wx_story_template` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `storyname` varchar(50) NOT NULL,
+  `comments` varchar(100),
+   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for `wx_story` 真实聊天的剧情
+-- ----------------------------
+DROP TABLE IF EXISTS `wx_story`;
+CREATE TABLE `wx_story` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `templateid` bigint(20) NOT NULL,
+  `rolename` varchar(50) NOT NULL,
+  `message` varchar(2000) NOT NULL,
+  `comments` varchar(100),
+  `createtime` varchar(14),
+   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --------------------- TODO resource
 

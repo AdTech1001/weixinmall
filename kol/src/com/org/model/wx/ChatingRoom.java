@@ -3,24 +3,33 @@ package com.org.model.wx;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatingRoom {
-	private Integer roomid;
+import com.org.interfaces.room.Room;
+import com.org.wx.utils.MessageUtil;
+
+public class ChatingRoom implements Room{
+	private Long roomid;
 	// 房间名称
 	private String roomname;
 	// 房间主题 
 	private String roomtitle;
+	// 模板id
+	private Long templateid;
+	
 	/**
 	 * 用户openid集合
 	 */
-	private List<String> userList = new ArrayList<String>();
-	
-	//private Map<String, List<String>> roomMap = new HashMap<String, List<String>>(); 
+	protected List<String> userList = new ArrayList<String>();
 
 	public ChatingRoom() {
-		
+	}
+
+	@Override
+	public void sendToAll(WxUser wxUser, String content) {
+		String nick = wxUser.getNickname();
+		MessageUtil.sendToMulti(nick + ":\n" + content, userList);
 	}
 	
-	public ChatingRoom(Integer roomid, String roomname, String roomtitle) {
+	public ChatingRoom(Long roomid, String roomname, String roomtitle) {
 		this.roomid = roomid;
 		this.roomname = roomname;
 		this.roomtitle = roomtitle;
@@ -43,11 +52,11 @@ public class ChatingRoom {
 		return userList;
 	}
 
-	public Integer getRoomid() {
+	public Long getRoomid() {
 		return roomid;
 	}
 
-	public void setRoomid(Integer roomid) {
+	public void setRoomid(Long roomid) {
 		this.roomid = roomid;
 	}
 
@@ -65,6 +74,14 @@ public class ChatingRoom {
 
 	public void setRoomtitle(String roomtitle) {
 		this.roomtitle = roomtitle;
+	}
+
+	public Long getTemplateid() {
+		return templateid;
+	}
+
+	public void setTemplateid(Long templateid) {
+		this.templateid = templateid;
 	}
 	
 }

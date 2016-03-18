@@ -105,7 +105,7 @@ dd{
 
 /* main */
 .div_main {
-	height: 485px; background: #d5d5d5 url(../images/cup.png) no-repeat right 0;
+	height: 485px; background: #fff url(../images/cup.png) no-repeat right 0;
 }
 
 .div_enter {
@@ -120,6 +120,10 @@ dd{
 }
 .div_footer a{
 	float: left; margin: 20px 0 0 152px; color: white; font-size: 14px;
+}
+
+.div_main .top_fix {
+	height: 10px; background: #008be6 no-repeat right 0;
 }
 
 .div_main .div_main_words {
@@ -143,3 +147,6 @@ dd{
 .span_words_content_a {
 	color: #ff9600;
 }
+
+
+.comwidth {margin: 0px 60px;}

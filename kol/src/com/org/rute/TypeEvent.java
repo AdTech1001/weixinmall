@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.org.caches.RoomContainer;
 import com.org.caches.WxUserContainer;
+import com.org.common.CommonConstant;
 import com.org.controller.wx.WxConstant;
 import com.org.interfaces.rute.Business;
 import com.org.model.wx.WxUser;
@@ -42,32 +43,40 @@ public class TypeEvent implements Business<String> {
 			String content = "";
 			WxUser wxUser = WxUserContainer.getInstance().getLocalUser(FromUserName);
 			
+			JSONObject res = null;
 			if(WxUtil.ENTER_CHATING_ROOM.equals(EventKey)) {
 				// 加入聊天室
 				if(wxUser.getRoomId() != null) {
+					// 如果在房间中，先退出
 					wxUser.exitChatingRoom();
 				}
-				wxUser.joininChatingRoom(RoomContainer.DEFAULT_ROOM_ID);
-				// 回复文本消息
-				content = "您已进入聊天室, 可以和大家聊天啦";
+				res = wxUser.joininChatingRoom(RoomContainer.DEFAULT_ROOM_ID);
 			} else if(WxUtil.EXIT_CHATING_ROOM.equals(EventKey)) {
 				// 退出聊天室
-				wxUser.exitChatingRoom();
-				// 回复文本消息
-				content = "您已退出聊天室";
+				res = wxUser.exitChatingRoom();
 			} else if(WxUtil.ENTER_STORE_ROOM.equals(EventKey)) {
 				// 进入故事模式
 				if(wxUser.getRoomId() != null) {
+					// 如果在房间中，先退出
 					wxUser.exitChatingRoom();
 				}
-				wxUser.joininChatingRoom(RoomContainer.STORY_ROOM_ID);
-				// 回复文本消息
-				content = "您已进入故事会";
+				res = wxUser.joininChatingRoom(RoomContainer.STORY_ROOM_ID);
 			} else if(WxUtil.EXIT_STORE_ROOM.equals(EventKey)) {
-				// 退出聊天室
-				wxUser.exitChatingRoom();
+				// 退出故事模式
+				res = wxUser.exitChatingRoom();
+				
+			}
+			
+			if(res != null) {
+
 				// 回复文本消息
-				content = "您已退出故事会";
+				if(res.getString(CommonConstant.RESP_CODE).equals("10000")) {
+					content = res.getString(CommonConstant.RESP_MSG);
+				} else {
+					content = "进入失败："+res.getString(CommonConstant.RESP_MSG) ;
+				}
+			} else {
+				content = "啊出问题啦！向管理员反映吧！";
 			}
 			
 			returns = MessageUtil.sendToOne(content, FromUserName);

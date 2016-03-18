@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.org.caches.RoomContainer;
 import com.org.common.CommonConstant;
+import com.org.interfaces.room.Room;
 
 public class WxUser {
 	private String openid;
@@ -19,6 +20,8 @@ public class WxUser {
 	private String province;
 	private String city;
 	private String password;
+	// 故事模式的名字
+	private String storyName;
 
 	/**
 	 * 
@@ -29,7 +32,7 @@ public class WxUser {
 		this.roomId = roomId;
 		JSONObject res = new JSONObject();
 		// 根据roomid寻找room
-		ChatingRoom cr = RoomContainer.getInstance().getRoomById(roomId);
+		Room cr = RoomContainer.getInstance().getRoomById(roomId);
 		if(cr != null) {
 			cr.join(openid);
 			res.put(CommonConstant.RESP_CODE, "10000");
@@ -49,7 +52,7 @@ public class WxUser {
 	public JSONObject exitChatingRoom(){
 		JSONObject res = new JSONObject();
 		// 根据roomid寻找room
-		ChatingRoom cr = RoomContainer.getInstance().getRoomById(roomId);
+		Room cr = RoomContainer.getInstance().getRoomById(roomId);
 		if(cr != null) {
 			if(StringUtils.isNotEmpty(openid)) {
 				this.roomId = null;
@@ -170,6 +173,14 @@ public class WxUser {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getStoryName() {
+		return storyName;
+	}
+
+	public void setStoryName(String storyName) {
+		this.storyName = storyName;
 	}
 	
 }

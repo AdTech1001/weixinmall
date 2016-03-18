@@ -165,7 +165,7 @@ public class CommonDao extends BaseDao {
 	 * @return
 	 * @throws SQLException
 	 */
-	public synchronized <T> boolean addSingle(String sql, Map<Integer, Object> params) {
+	public boolean addSingle(String sql, Map<Integer, Object> params) {
 		java.sql.Connection conn = getConnection();
 		PreparedStatement ps = null;
 		try {
